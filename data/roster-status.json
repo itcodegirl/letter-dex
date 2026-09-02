@@ -1,0 +1,181 @@
+{
+  "checkedAt": "2026-09-02T22:48:30.900Z",
+  "endpoint": "https://pokeapi.co/api/v2/pokemon/{slug}",
+  "results": [
+    {
+      "letter": "A",
+      "slug": "abra",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "B",
+      "slug": "bulbasaur",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "C",
+      "slug": "cubone",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "D",
+      "slug": "diglett",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "E",
+      "slug": "ekans",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "F",
+      "slug": "fearow",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "G",
+      "slug": "gengar",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "H",
+      "slug": "haunter",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "I",
+      "slug": "ivysaur",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "J",
+      "slug": "jigglypuff",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "K",
+      "slug": "koffing",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "L",
+      "slug": "lapras",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "M",
+      "slug": "mudkip",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "N",
+      "slug": "nidoking",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "O",
+      "slug": "oddish",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "P",
+      "slug": "pikachu",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "Q",
+      "slug": "quagsire",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "R",
+      "slug": "rattata",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "S",
+      "slug": "snorlax",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "T",
+      "slug": "totodile",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "U",
+      "slug": "umbreon",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "V",
+      "slug": "vulpix",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "W",
+      "slug": "weedle",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "Y",
+      "slug": "yamper",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    },
+    {
+      "letter": "Z",
+      "slug": "zubat",
+      "status": 200,
+      "resolved": true,
+      "artwork": true
+    }
+  ]
+}
