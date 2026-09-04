@@ -26,6 +26,7 @@ function byId(id) {
 }
 
 const elements = {
+  appShell: byId('appShell'),
   prompt: byId('prompt'),
   stage: byId('stage'),
   reveal: byId('reveal'),
@@ -52,6 +53,7 @@ let state = loadProgress()
 let mode = state.settings.mode === 'pokedex' ? 'letters' : state.settings.mode
 let sessionEnded = false
 let nextRoundTimer = null
+let roundSequence = 0
 const engine = new ChooseEngine(elements.keys)
 
 function persist() {
@@ -75,12 +77,17 @@ function handleAttempt(attempt) {
 
 function paintProgress(displayCount = state.activeSession.correct) {
   const bounded = Math.min(displayCount, SESSION_CAP)
-  elements.meter.style.width = `${(bounded / SESSION_CAP) * 100}%`
   elements.count.textContent = `${bounded} of ${SESSION_CAP}`
+  elements.meter.replaceChildren()
+  for (let index = 0; index < SESSION_CAP; index += 1) {
+    const step = document.createElement('i')
+    step.className = `trail-step${index < bounded ? ' complete' : ''}${index === bounded ? ' current' : ''}`
+    elements.meter.append(step)
+  }
   elements.badges.replaceChildren()
-  for (let index = 0; index < 8; index += 1) {
+  for (let index = 0; index < Math.min(state.sessions.length, 8); index += 1) {
     const badge = document.createElement('i')
-    badge.className = `badge${index < state.sessions.length ? ' won' : ''}`
+    badge.className = 'badge won'
     elements.badges.append(badge)
   }
 }
@@ -110,10 +117,10 @@ function handleCorrect({ caughtSlug } = {}) {
 
   persist()
   window.clearTimeout(nextRoundTimer)
-  nextRoundTimer = window.setTimeout(playRound, 2300)
+  nextRoundTimer = window.setTimeout(() => playRound('completed answer'), 2300)
 }
 
-function createController() {
+function createController(roundId) {
   const shared = {
     state,
     elements,
@@ -122,6 +129,7 @@ function createController() {
     onAttempt: handleAttempt,
     onCorrect: handleCorrect,
     settings: state.settings,
+    isCurrentRound: () => roundId === roundSequence,
   }
   return mode === 'words'
     ? new WordsMode({ ...shared, activeLetters })
@@ -130,12 +138,15 @@ function createController() {
 
 function playRound() {
   if (sessionEnded || mode === 'pokedex') return
-  createController().play()
+  roundSequence += 1
+  createController(roundSequence).play()
 }
 
 async function selectMode(nextMode) {
   window.clearTimeout(nextRoundTimer)
+  roundSequence += 1
   mode = nextMode
+  elements.appShell.dataset.activeMode = nextMode
   state.settings.mode = nextMode
   persist()
 
@@ -158,7 +169,7 @@ async function selectMode(nextMode) {
   } else if (sessionEnded) {
     showSessionEnd()
   } else {
-    playRound()
+    playRound('mode selected')
   }
 }
 
@@ -188,7 +199,7 @@ function buildSettings() {
         state.settings.letterSet = value === 'all' ? 'all' : Number(value)
         activateButtonGroup(elements.letterPresets, 'letterSet', state.settings.letterSet)
         persist()
-        if (mode === 'letters') playRound()
+        if (mode === 'letters') playRound('letter set changed')
       })
       elements.letterPresets.append(button)
     })
@@ -203,7 +214,7 @@ function buildSettings() {
       state.settings.wordSet = index
       activateButtonGroup(elements.wordPresets, 'wordSet', index)
       persist()
-      if (mode === 'words') playRound()
+      if (mode === 'words') playRound('word set changed')
     })
     elements.wordPresets.append(button)
   })
@@ -223,7 +234,7 @@ elements.caseToggle.querySelectorAll('button').forEach((button) => {
     state.settings.letterCase = button.dataset.case
     activateButtonGroup(elements.caseToggle, 'case', state.settings.letterCase)
     persist()
-    if (mode === 'letters') playRound()
+    if (mode === 'letters') playRound('letter case changed')
   })
 })
 
@@ -232,7 +243,7 @@ elements.lengthToggle.querySelectorAll('button').forEach((button) => {
     state.settings.wordLength = button.dataset.length
     activateButtonGroup(elements.lengthToggle, 'length', state.settings.wordLength)
     persist()
-    if (mode === 'words') playRound()
+    if (mode === 'words') playRound('word length changed')
   })
 })
 

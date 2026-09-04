@@ -65,11 +65,7 @@ export class WordsMode {
     listen.type = 'button'
     listen.setAttribute('aria-label', 'Hear the word')
     listen.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M11 5 6 9H3v6h3l5 4z"></path>
-        <path d="M15.5 8.5a5 5 0 0 1 0 7"></path>
-        <path d="M18.5 5.5a9 9 0 0 1 0 13"></path>
-      </svg>
+      <span class="material-symbols-rounded" aria-hidden="true">volume_up</span>
       Listen`
     this.elements.stage.className = 'stage'
     this.elements.stage.replaceChildren(listen)

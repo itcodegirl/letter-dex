@@ -10,26 +10,29 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;1000&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24..48,600,1,0" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
-    <main class="dex">
+    <main class="dex" id="appShell" data-active-mode="letters">
       <header class="lid">
-        <div class="lens" aria-hidden="true"></div>
-        <div class="lamps" aria-hidden="true"><i class="lamp r"></i><i class="lamp y"></i><i class="lamp g"></i></div>
+        <div class="camp-mark" aria-label="Letter Dex">
+          <span class="material-symbols-rounded" aria-hidden="true">explore</span>
+          <strong>Letter Dex</strong>
+        </div>
         <div class="badges" id="badges" aria-label="Badges earned"></div>
       </header>
 
       <nav class="modes" aria-label="Choose a mode">
-        <button data-mode="letters" class="on" aria-pressed="true">Letters</button>
-        <button data-mode="words" aria-pressed="false">Words</button>
-        <button data-mode="pokedex" aria-pressed="false">Pokédex</button>
+        <button data-mode="letters" class="on" aria-pressed="true"><span class="material-symbols-rounded" aria-hidden="true">hearing</span>Letters</button>
+        <button data-mode="words" aria-pressed="false"><span class="material-symbols-rounded" aria-hidden="true">spellcheck</span>Words</button>
+        <button data-mode="pokedex" aria-pressed="false"><span class="material-symbols-rounded" aria-hidden="true">menu_book</span>Pokédex</button>
       </nav>
 
       <section id="playView">
         <div class="screen">
           <p class="prompt" id="prompt">Loading…</p>
-          <div class="stage thinking" id="stage">●&nbsp;●&nbsp;●</div>
+          <div class="stage thinking" id="stage" aria-busy="true">Preparing camp…</div>
           <div class="reveal" id="reveal" aria-live="polite"></div>
         </div>
         <div class="keys" id="keys"></div>
@@ -38,7 +41,7 @@
       <section id="pokedexView" class="collection-screen" aria-label="Caught Pokémon" hidden></section>
 
       <div class="foot" id="sessionProgress">
-        <div class="meter" aria-hidden="true"><span id="meter"></span></div>
+        <div class="meter" id="meter" aria-hidden="true"></div>
         <div class="count" id="count">0 of 8</div>
       </div>
 
