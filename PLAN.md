@@ -1,11 +1,12 @@
 # Letter Dex — PLAN.md
 
 Status: **Phase 0 approved by Jenna on 2 Sep 2026. Later phases remain plan-only until approved.**
-Last updated: 2 Sep 2026.
+Last updated: 4 Sep 2026.
 
 ## Open questions (answer before phase 0 ships)
 
-1. **Device.** iPad, Android tablet, or laptop? Speech and audio behave differently on each.
+1. **Device.** Decided 4 Sep 2026: Android tablet (primary), laptop (secondary). Design for
+   touch first; everything must also work with mouse and keyboard.
 2. **Recorded sounds.** Decided: two voices, see "Recording plan" below. Still open: which device
    they're recorded on (phone voice memo is fine) and when.
 3. **Letterforms.** What do *a* and *g* look like on his tracing app? Single-storey or double-storey
@@ -28,8 +29,11 @@ not a stage to spend time in.
 
 ## Sources
 
-Two apps' curricula, pasted in full. PK and K overlap heavily in both subjects; K is the superset
-and is the data spine. Grade 1–5 tiers are logged for shape, not for near-term build.
+Two apps' curricula, captured in `docs/sources/brody-curriculum-reference-2026-09-04.md`; his
+1 Sep 2026 baseline is `docs/sources/where-brody-is-2026-09-01.md`. PK and K overlap heavily
+in both subjects; K is the superset and is the data spine. Grade 1–5 tiers are logged for
+shape, not for near-term build. Letter names, case match, and letter tracing belong to the
+foundational-literacy-curriculum strands (AR, PW) under its D-008 and are deferred here.
 
 ## Engines
 
@@ -133,9 +137,9 @@ Each phase is one or more PRs. Acceptance criteria define done.
 
 ### Phase 1 — Where he is (not approved)
 
-**1a. PK sweep.** Letter names, uppercase and lowercase, alphabetical groups. Case match.
-Adaptive, so known letters drop out fast. Number recognition 1–10, count objects 1–10, number
-sequence to 10 (sprite grid). Trace digits 1–10.
+**1a. PK sweep — letter names and case match deferred to the AR strand (curriculum D-008).**
+Number recognition 1–10, count objects 1–10, number sequence to 10 (sprite grid). Trace
+digits 1–10.
 
 **1b. K sounds.** Letter Sounds sets 2–4, ending-sound round for X, revision spiral.
 
@@ -164,9 +168,10 @@ heights and weights. Shapes use original SVG.
 - Math: number line, base-ten blocks, clock, coins, word-problem templates, fact fluency, ruler,
   bar/picture graphs, partition shapes.
 
-### Phase 5 — Tracing letters (not approved)
+### Phase 5 — Tracing letters (not approved; deferred to the PW strand, curriculum D-008)
 
-- Trace engine already exists from digits. Author 52 stroke sets to match his app's letterforms.
+- If ever built here it is practice only and records no mastery. Trace engine already exists
+  from digits. Author 52 stroke sets to match his app's letterforms.
 
 ### Phase 6+ — Grade 2–5 (not approved)
 

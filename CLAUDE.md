@@ -86,6 +86,7 @@ data/
   math/               number ranges, fact families, shapes, by tier
   books/              original decodable books
 test/                 node:test — every data file has a test
+docs/sources/         curriculum references and dated learner baselines (not loaded by the app)
 ```
 
 ## Tests that must exist and pass
