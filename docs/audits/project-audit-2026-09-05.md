@@ -51,7 +51,7 @@
 
 ### Unresolved
 
-- Letterforms and font; recording device and timing; voice choice (P-02); engagement mismatch (P-04); any physical Android observation; a host the tablet can reach; mastery decay (system design open question 2); skill-registry threshold (question 3, now reached: letters, words and math are three Choose-based skills); canonical remote (`letter-dex` vs `letter-brody`, raised 4 Sep; GitHub now lists only `letter-brody`, so the older remote was likely renamed or removed, unverified from here).
+- Letterforms and font; recording device and timing; voice choice (P-02); engagement mismatch (P-04); any physical Android observation; a host the tablet can reach; mastery decay (system design open question 2); skill-registry threshold (question 3, now reached: letters, words and math are three Choose-based skills).
 
 ### Contradictory (details in §12)
 
@@ -324,7 +324,7 @@ Against the system design's sequenced adoption: item 0 (close Phase 0) is partly
 | Recording plan (no schwa) | `graphemes.js`, `roster.js` | data carries the schwa | wrong model in every consonant except m, n, s | Set 1 clips now; phoneme id separate from TTS hint |
 | Phase 0 done criterion (deployed URL) | no deployment | Phase 0 not actually done | Android gate blocked | decide hosting now |
 | `PLAN.md` Phase 1a "Trace digits 1–10" | D-008 consequence 2; PW digital boundary | digit tracing on screen must be practice-only | risk of recording it as mastery | label practice-only in 1a as Phase 5 does |
-| 4 Sep addendum: two remotes (`letter-dex`, `letter-brody`) | GitHub lists only `letter-brody` | the older remote was likely renamed or removed | none if so | confirm and note in README |
+| 4 Sep addendum: two remotes (`letter-dex`, `letter-brody`) | Jenna, 5 Sep: `letter-dex` was renamed to `letter-brody` | resolved; one remote | none | note the rename in README |
 | Math stage drives item selection (`math.js:11`) | game mapping "curriculum state and game progression are never the same value" | not governing letter-dex, but the principle is violated | completion implies stage mastery | adult start stage (R8) |
 
 **Scope**
@@ -446,7 +446,7 @@ Not required for the slice (built, leave in place, do not extend): 3D trail, dis
 | Letterforms and font (Q4) | Nunito, double-storey a | keep; switch when the tracing app is known | keep until Strand B work makes it concrete | Before Expansion |
 | Recording device and time | undecided | phone voice memo | phone; Set 1 only now | Before slice testing |
 | Grown-up gate | none | none; long-press; two-tap | two-tap or long-press, no PIN | Before UX |
-| Canonical remote | GitHub lists `letter-brody` only | confirm rename; archive the other | confirm and note in README | Decide Now (five minutes) |
+| Canonical remote | `letter-dex` was renamed to `letter-brody`; one remote (Jenna, 5 Sep) | none | note the rename in README | Decided 5 Sep |
 | Commit the prior analysis documents | committed to `docs/state/` with this audit | none | done | Decided 5 Sep |
 | Distribution context | private | private; portfolio (Grove); public | private for letter-dex; the Grove is the portfolio artefact | Later |
 | Grove freeze exit | D-008 §4 | unfreeze when AR instruction is required | keep frozen; persistence first if it ever continues | Later |
@@ -482,7 +482,7 @@ Not required for the slice (built, leave in place, do not extend): 3D trail, dis
 | Duplicate `activeLetters`, `shuffled`; biased shuffle; dead `playRound` args | 4 Sep report #11, #12, #15 | Open |
 | `innerHTML` interpolation of API strings | 4 Sep report #13 | Open, low risk |
 | `verify:roster` dirties the tree | 4 Sep report #16 | Open |
-| Two remotes | addendum §1.1 | Likely resolved by rename; unverified |
+| Two remotes | addendum §1.1 | Resolved: `letter-dex` was renamed to `letter-brody` (Jenna, 5 Sep) |
 | `PLAN1.md` and stray inventory file | addendum §2 | Fixed (removed 4 Sep) |
 | Curriculum repo CRLF | addendum §3 | Fixed (`.gitattributes` 4 Sep) |
 | Game repo CRLF, no persistence, counter ids, 1.39 MB bundle, Enter quirk, reload restart | addendum §4 | Open; frozen by D-008 |
