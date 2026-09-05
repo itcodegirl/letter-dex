@@ -1,0 +1,32 @@
+.camp-actions .camp-choice-icon {
+  font-size:48px;
+  line-height:1;
+  margin:0 auto 8px;
+  opacity:1;
+}
+.camp-choice-image {
+  display:block;
+  width:48px;
+  height:48px;
+  object-fit:contain;
+  margin:0 auto 8px;
+}
+@media(max-width:800px) {
+  .camp-view { margin-top:40px; }
+}
+@media(orientation:landscape) and (max-height:800px) {
+  .camp-view { max-width:900px; margin-top:12px; }
+  .camp-view h1 { font-size:2.5rem; }
+  .camp-actions { flex-wrap:nowrap; margin:18px 0; }
+  .camp-actions button { min-width:0; }
+  #startMath { flex-basis:0; }
+}
+@media(orientation:landscape) and (max-height:650px) {
+  .camp-view .eyebrow { margin:4px 0; }
+  .camp-view h1 { font-size:2.2rem; margin:8px 0; }
+  .camp-view h1 br { display:none; }
+  .camp-copy { margin:8px 0; }
+  .camp-audio { margin:4px; }
+  .camp-actions { margin:10px 0; }
+  .camp-actions button { padding:12px; }
+}

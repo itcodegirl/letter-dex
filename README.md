@@ -30,6 +30,10 @@ vanilla JavaScript modules and requires an HTTP(S) server, not `file://`.
 
 ## Living Trail
 
+Camp offers one set of adventure choices: an ear for sounds, a book for words, and
+a berry for math. Hear the mission explains these cues. My Pokémon and Adventure
+journal remain directly accessible at camp; the mode bar returns during play.
+
 ### Destination discoveries
 
 Every eight-answer quest leads to one combined celebration: follow three footprints,
