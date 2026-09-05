@@ -4,16 +4,37 @@ export const MATH_STAGES = [
   { name: 'Beacon Rescue', skill: 'Find the missing amount', mission: 'Fill the empty spaces to light the beacon.', success: 'More light! The beacon is waking up.', next: 'Explore again' },
 ]
 
-export function mathItems(stage) {
-  if (stage === 0) return Array.from({ length: 10 }, (_, i) => ({ id: `math-count:${i + 1}`, kind: 'math-count', total: i + 1, answer: i + 1 }))
+export const MATH_SETS = [
+  { id: 'trail-team', name: 'Trail Team', description: 'Count to 10, add within 5, and find what makes 5.' },
+  { id: 'river-rescue', name: 'River Rescue', description: 'Count 6–10, add to 6–10, and find what makes 10.' },
+  { id: 'beacon-champions', name: 'Beacon Champions', description: 'Count 6–10, combine larger groups, and find missing amounts to make 6–10.' },
+]
+
+const SET_RANGES = {
+  'trail-team': { countMin: 1, addMin: 2, addMax: 5, addendMin: 1, missingMin: 0, missingTotals: [5] },
+  'river-rescue': { countMin: 6, addMin: 6, addMax: 10, addendMin: 1, missingMin: 0, missingTotals: [10] },
+  'beacon-champions': { countMin: 6, addMin: 6, addMax: 10, addendMin: 2, missingMin: 1, missingTotals: [6, 7, 8, 9, 10] },
+}
+
+export function mathItems(stage, setId = 'trail-team') {
+  const set = MATH_SETS.find(candidate => candidate.id === setId) || MATH_SETS[0]
+  const range = SET_RANGES[set.id]
+  if (stage === 0) return Array.from({ length: 11 - range.countMin }, (_, i) => {
+    const total = range.countMin + i
+    return { id: `math-count:${total}`, kind: 'math-count', total, answer: total }
+  })
   if (stage === 1) {
     const items = []
-    for (let a = 1; a < 5; a++) for (let b = 1; a + b <= 5; b++) {
+    for (let a = range.addendMin; a < range.addMax; a++) for (let b = range.addendMin; a + b <= range.addMax; b++) {
+      if (a + b < range.addMin) continue
       items.push({ id: `math-add:${a}+${b}`, kind: 'math-add', a, b, total: a + b, answer: a + b })
     }
     return items
   }
-  return Array.from({ length: 5 }, (_, a) => ({ id: `math-missing:${a}+?=5`, kind: 'math-missing', a, total: 5, answer: 5 - a }))
+  return range.missingTotals.flatMap(total => Array.from({ length: total - range.missingMin }, (_, i) => {
+    const a = range.missingMin + i
+    return { id: `math-missing:${a}+?=${total}`, kind: 'math-missing', a, total, answer: total - a }
+  }))
 }
 
 export function mathChoices(answer, random = Math.random) {
