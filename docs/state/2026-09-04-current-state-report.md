@@ -3,7 +3,7 @@
 **Repository:** `~/projects/letter-dex` on `codeherway` · branch `main` at `e4b0f67` (identical to `origin/main`)
 **Remote:** `https://github.com/itcodegirl/letter-brody.git`
 **Report date:** 4 September 2026, 23:42 UTC
-**Method:** the working tree, `.git` objects and refs were copied to a Linux workspace and inspected with real `git`, `node --test`, `node --check`, the project's own dev server, and a headless Chromium run of the app. The user's repository was not modified; the only file written back is this report. Prior session notes (`Claude outputs/*.md`) were read but every claim below was re-derived from the repository itself.
+**Method:** the working tree, `.git` objects and refs were copied to a Linux workspace and inspected with real `git`, `node --test`, `node --check`, the project's own dev server, and a headless Chromium run of the app. The user's repository was not modified; the only file written back is this report. Prior session notes (in the gitignored local notes folder) were read but every claim below was re-derived from the repository itself.
 
 Legend for claims: **Fact** = observed in the repo or in a command's output. **Inference** = reasoning from those observations. **Recommendation** = my judgement.
 
@@ -98,8 +98,8 @@ Evidence for the rating: 12/12 automated tests pass (`npm test`); all 20 tracked
 | `docs/sources/*.md` | Curriculum reference (38 KB) and the 1 Sep learner baseline | Current, not loaded by the app | |
 | `docs/state/` | Directory for dated state reports | **Was empty** before this file | |
 | `robots.txt` | `Disallow: /` | Current | Belt-and-braces alongside the `noindex` meta |
-| `.gitignore` | Ignores `node_modules/`, `.vercel/`, `coverage/`, `tmp/`, `Claude outputs/` | Current | |
-| `Claude outputs/` | Two untracked session artefacts (state addendum, D-008 draft) | Untracked by design | Deliberately gitignored; contains the pending D-008 decision text |
+| `.gitignore` | Ignores `node_modules/`, `.vercel/`, `coverage/`, `tmp/`, and the local notes folder | Current | |
+| Local notes folder (gitignored) | Two untracked session artefacts (state addendum, D-008 draft) | Untracked by design | Deliberately gitignored; contains the pending D-008 decision text |
 
 Not in the repository at all, despite appearing in `CLAUDE.md`'s structure block: `src/primitives/`, `data/math/`, `data/books/`, `audio/`, and the `build`/`sort`/`trace`/`procedure` engines. **Fact**, not a defect — that block describes the target shape.
 
@@ -170,7 +170,7 @@ Nothing in this report claims a feature works because its code exists; every "ve
 ## 6. Git and Work-in-Progress State
 
 - **Current branch:** `main` at `e4b0f67`, tracking `origin/main` at the same SHA — **up to date, nothing to push, nothing to pull**.
-- **Working tree:** `git status` → **clean**. No modified files, no staged changes, no stashes, no untracked files other than the gitignored `Claude outputs/` (2 markdown artefacts) and the previously empty `docs/state/` directory.
+- **Working tree:** `git status` → **clean**. No modified files, no staged changes, no stashes, no untracked files other than the gitignored local notes folder (2 markdown artefacts) and the previously empty `docs/state/` directory.
 - **All commits are correctly authored** as `itcodegirl <88835851+itcodegirl@users.noreply.github.com>`, and no commit message contains AI attribution or a tool name — both `CLAUDE.md` rules hold across the whole history.
 
 Commit history (all of it — 8 commits):
@@ -266,10 +266,10 @@ e311d5b  2026-09-02 22:56  feat: add Phase 0 data and progress foundation
 18. Escape or template-bind API strings instead of `innerHTML` interpolation.
 19. Reconcile `CLAUDE.md`'s structure block with what exists (mark target directories as target).
 
-### Unresolved product decisions (from `PLAN.md` and `Claude outputs/`)
+### Unresolved product decisions (from `PLAN.md` and the local notes folder)
 
 20. **Letterforms** — single- vs double-storey *a* and *g* in Brody's tracing app decides the font for the entire game. `PLAN.md` open question 3, still open, and it blocks nothing today but gets more expensive with every screen.
-21. **D-008** — the two-games scope split is a **draft** in `Claude outputs/D-008-two-games-convergence-draft.md`, not yet written to the curriculum repo's `DECISIONS.md`. `PLAN.md` already acts on it (phases 1a and 5 are deferred), so the code has adopted a decision that is not recorded. Recommendation in that draft: Option D.
+21. **D-008** — the two-games scope split is a **draft** (now `docs/state/2026-09-04-d008-two-games-convergence-draft.md`), not yet written to the curriculum repo's `DECISIONS.md`. `PLAN.md` already acts on it (phases 1a and 5 are deferred), so the code has adopted a decision that is not recorded. Recommendation in that draft: Option D.
 22. **Recording logistics** — device and date for Jenna's and Brody's clips. Phase 3.
 23. **Whether tracing is ever built here** at all, given the PW strand requires physical work samples.
 
@@ -335,7 +335,7 @@ Sequencing note: 1–3 are one PR each per `CLAUDE.md` ("one phase or sub-phase 
   7. The app needs an `http://` origin and a live connection; `file://` does not work and letters mode has no offline path.
   8. Two remotes hold this history (`letter-brody`, `letter-dex`) and the canonical one has not been chosen. Local `origin` is `letter-brody`.
   9. `docs/sources/` is reference material the app never loads; the 1 Sep baseline is a record, not a live counter — add a new dated file rather than editing it.
-  10. `PLAN.md` phases 1a and 5 are deferred to the curriculum repo's AR and PW strands on the strength of a **draft** decision (`Claude outputs/D-008-two-games-convergence-draft.md`) that has not yet been recorded in `docs/DECISIONS.md` there.
+  10. `PLAN.md` phases 1a and 5 are deferred to the curriculum repo's AR and PW strands on the strength of a **draft** decision (now `docs/state/2026-09-04-d008-two-games-convergence-draft.md`) that has not yet been recorded in `docs/DECISIONS.md` there.
 
 ---
 

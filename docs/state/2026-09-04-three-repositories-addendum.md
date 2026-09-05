@@ -33,7 +33,7 @@ Branch `phase0/runtime`, 240 insertions / 695 deletions across 6 files, plus 4 u
 **Untracked paths**
 
 - `assets/camp/campsite-background.png` — referenced by `styles.css:34`. The redesign does not render without it.
-- `design-qa.md` (63 lines) — a visual-QA record comparing the implementation to a Codex-generated design PNG. Concludes "final result: passed".
+- `design-qa.md` (63 lines) — a visual-QA record comparing the implementation to a generated design PNG. Concludes "final result: passed".
 - `PLAN1.md` (228 lines) — **a superseded 1 Sep copy of `PLAN.md`.** It says "plan mode, nothing builds until Jenna approves", puts recorded audio in phase 2 rather than phase 3, and says "Deploy to Vercel" where the tracked plan says deploy *privately*. Two plan files with different phase numbering in one working tree is exactly how a future session follows the wrong one.
 - `CHAT-ARTIFACT-INVENTORY.md` (80 lines) — this is the **curriculum repository's** `docs/CHAT-ARTIFACT-INVENTORY.md`, sitting in the game repo. It describes `research/`, `docs/DECISIONS.md`, and curriculum chats — none of which exist here.
 
@@ -54,7 +54,7 @@ Branch `phase0/runtime`, 240 insertions / 695 deletions across 6 files, plus 4 u
 
 ## 3. `foundational-literacy-curriculum` — documentation repository
 
-- Remote `github.com/itcodegirl/foundational-literacy-curriculum.git`. `main` at `43c9731` (merge of PR #1 from `codex/complete-foundational-literacy-v1`), 3 commits, local `main` in sync with `origin/main`.
+- Remote `github.com/itcodegirl/foundational-literacy-curriculum.git`. `main` at `43c9731` (merge of PR #1 from its feature branch), 3 commits, local `main` in sync with `origin/main`.
 - 19 markdown artifacts across `research/`, `research/completed/`, `research/prompts/`, `curriculum/` (alphabet-recognition, pre-writing, developmental-progression, lesson-design), `assessments/`, `design/game-mapping/`, `docs/`.
 - **`git status` shows all 19 files modified — this is line-endings only.** `git diff --ignore-cr-at-eol` is empty; the content is identical to `HEAD`. The files were rewritten with CRLF on Windows.
 - **Recommendation (Small):** add a `.gitattributes` with `* text=auto eol=lf` and re-normalise once. Otherwise every session opens on a repo that looks like it has 5,000 changed lines, and a real edit will be invisible inside that noise. This is the single highest-value five-minute fix across all three repos.
@@ -67,7 +67,7 @@ Branch `phase0/runtime`, 240 insertions / 695 deletions across 6 files, plus 4 u
 
 This is a separate, working browser game I had not seen before. It is not a plan; it runs.
 
-- Remote `github.com/itcodegirl/foundational-literacy-game.git`. `main` at `f4cc206` (merge of PR #1 from `codex/ar-001-letterlight-grove`), 3 commits, in sync. Working tree diffs are **CRLF-only** here too.
+- Remote `github.com/itcodegirl/foundational-literacy-game.git`. `main` at `f4cc206` (merge of PR #1 from its feature branch), 3 commits, in sync. Working tree diffs are **CRLF-only** here too.
 - **Stack:** TypeScript ~6.0, Vite ^8.2, Vitest ^4.1, Phaser ^4.2. Strict-ish tsconfig (`noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`, `verbatimModuleSyntax`, `noEmit`). `package-lock.json` present.
 - **What it is:** "Letterlight Grove", a vertical slice of curriculum competency **AR-001** — given a letter *name*, pick the matching uppercase letter. One supported practice round, then three independent probes, then either completion or a supportive review. Content is three hard-coded letters (M, S, A) in `src/core/content.ts`, explicitly labelled "a small prototype sample, not a universal instructional sequence".
 - **Architecture:** `src/core/` is framework-free and testable (`learning-session.ts`, `evidence.ts`, `content.ts`, `reward-store.ts`, `types.ts`); `src/game/` is Phaser presentation; `src/ui/` builds the DOM shell. The Phaser canvas is `aria-hidden="true"` and every interaction also exists as a real DOM button — the game layer is decorative, the DOM is the product.
