@@ -18,7 +18,8 @@ import { renderParentView } from './ui/parent-view.js'
 import { renderPokedex } from './ui/pokedex-view.js'
 import { RoundLifecycle } from './core/round-lifecycle.js'
 import { getPokemon } from './core/pokeapi.js'
-import { speak } from './core/speech.js'
+import { speak, configureSpeech, cancelSpeech, whenSpeechEnds } from './core/speech.js'
+import { createVoiceSettings } from './ui/voice-settings.js'
 import { MathMode } from './modes/math.js'
 import { MATH_STAGES } from '../data/math/adventure.js'
 import { mathJourney, advanceMathJourney } from './core/math-journey.js'
@@ -113,7 +114,7 @@ function leaveDiscovery() {
 function enterDiscovery() {
   navigationVersion++
   byId('homeButton').hidden = false
-  lifecycle.cancel(); globalThis.speechSynthesis?.cancel(); engine.clear()
+  lifecycle.cancel(); cancelSpeech(); engine.clear()
   atCamp = false
   elements.playView.hidden = true; elements.pokedexView.hidden = true
   byId('campView').hidden = true; byId('grownSettings').hidden = true
@@ -202,6 +203,10 @@ function startNewSession() {
   paintProgress()
 }
 
+function afterFeedback(roundId, minimumDelay, action) {
+  lifecycle.afterFeedback(roundId, minimumDelay, whenSpeechEnds(), action)
+}
+
 function handleCorrect(roundId, { caughtSlug, encounteredSlug } = {}) {
   if (!lifecycle.accept(roundId)) return
   const discoverySlug = caughtSlug ?? encounteredSlug ?? ROSTER[activeLetters()[0]].slug
@@ -215,10 +220,10 @@ function handleCorrect(roundId, { caughtSlug, encounteredSlug } = {}) {
       completedMathStage = chapter
       saveDestination(discoverySlug, isNew)
       sessionEnded = true
-      lifecycle.after(roundId, 1900, showSessionEnd)
+      afterFeedback(roundId, 1900, showSessionEnd)
     } else {
       byId('buddyLine').textContent = MATH_STAGES[chapter].success
-      lifecycle.after(roundId, 2600, () => playRound())
+      afterFeedback(roundId, 2600, () => playRound())
     }
     persist()
     return
@@ -233,13 +238,13 @@ function handleCorrect(roundId, { caughtSlug, encounteredSlug } = {}) {
     if (!caughtSlug) recordCatch(state, discoverySlug)
     saveDestination(discoverySlug, isNew)
     persist()
-    lifecycle.after(roundId, 1900, showSessionEnd)
+    afterFeedback(roundId, 1900, showSessionEnd)
     return
   }
 
   persist()
   byId('buddyLine').textContent = state.activeSession.correct === 3 ? 'Look! The first beacon is glowing.' : state.activeSession.correct === 6 ? 'The clearing is just ahead!' : 'Another stone! Let’s explore.'
-  lifecycle.after(roundId, 2600, () => playRound())
+  afterFeedback(roundId, 2600, () => playRound())
 }
 
 function createController(roundId) {
@@ -262,7 +267,7 @@ function createController(roundId) {
 function playRound() {
   if (sessionEnded || mode === 'pokedex' || atCamp) return
   const roundId = lifecycle.begin()
-  globalThis.speechSynthesis?.cancel()
+  cancelSpeech()
   byId('buddyLine').textContent = mode === 'math' ? MATH_STAGES[mathJourney(state).stage].mission : 'Listen to the clue. Find the next stone.'
   createController(roundId).play()
 }
@@ -271,7 +276,7 @@ async function selectMode(nextMode) {
   const version = ++navigationVersion
   leaveDiscovery()
   lifecycle.cancel()
-  globalThis.speechSynthesis?.cancel()
+  cancelSpeech()
   atCamp = false
   byId('homeButton').hidden = false
   byId('campView').hidden = true
@@ -313,7 +318,7 @@ function showCamp() {
   navigationVersion++
   leaveDiscovery()
   lifecycle.cancel()
-  globalThis.speechSynthesis?.cancel()
+  cancelSpeech()
   atCamp = true
   engine.clear()
   elements.playView.hidden = true
@@ -436,6 +441,7 @@ elements.importInput.addEventListener('change', async () => {
     mode = state.settings.mode === 'pokedex' ? 'letters' : state.settings.mode
     persist()
     buildSettings()
+    voiceSettings.refresh()
     paintProgress()
     await selectMode(mode)
     elements.backupStatus.textContent = 'Progress imported.'
@@ -445,6 +451,26 @@ elements.importInput.addEventListener('change', async () => {
     elements.importInput.value = ''
   }
 })
+
+configureSpeech({
+  getVoiceURI: () => state.settings.speechVoice ?? '',
+  getRate: () => state.settings.speechRate ?? 0.7,
+  onError: message => { byId('speechStatus').textContent = message },
+})
+const voiceSettings = createVoiceSettings({
+  select: byId('speechVoice'),
+  pace: byId('speechPace'),
+  preview: byId('previewVoice'),
+  status: byId('voiceStatus'),
+  getVoiceURI: () => state.settings.speechVoice ?? '',
+  getRate: () => state.settings.speechRate ?? 0.7,
+  onChange: value => { state.settings.speechVoice = value; persist() },
+  onRateChange: value => { state.settings.speechRate = value; persist() },
+})
+
+byId('previewMSound').addEventListener('click', () => speak('mmm'))
+byId('previewNSound').addEventListener('click', () => speak('nnn'))
+byId('previewSSound').addEventListener('click', () => speak('sss'))
 
 buildSettings()
 renderParentView(elements.parentView, state)

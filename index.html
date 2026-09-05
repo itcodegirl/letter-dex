@@ -84,6 +84,25 @@
       <details class="grown" id="grownSettings">
         <summary>Grown-up settings &amp; progress</summary>
         <div class="grown-body">
+          <section class="voice-settings" aria-labelledby="voiceHeading">
+            <h2 id="voiceHeading">Adventure voice</h2>
+            <label for="speechVoice">Voice</label>
+            <select id="speechVoice" aria-describedby="voiceStatus"></select>
+            <label for="speechPace">Speaking pace</label>
+            <select id="speechPace">
+              <option value="0.6">Slower</option>
+              <option value="0.7" selected>Gentle</option>
+              <option value="0.8">Regular</option>
+              <option value="0.9">Quicker</option>
+            </select>
+            <button id="previewVoice" type="button">Try voice</button>
+            <div class="phoneme-previews">
+              <button id="previewMSound" type="button">Try m sound</button>
+              <button id="previewNSound" type="button">Try n sound</button>
+              <button id="previewSSound" type="button">Try s sound</button>
+            </div>
+            <p id="voiceStatus" class="setting-help" role="status"></p>
+          </section>
           <section id="lettersSettings">
             <h2>Letter set</h2>
             <div class="presets" id="letterPresets"></div>
@@ -127,6 +146,7 @@
       </details>
       <p id="saveStatus" class="system-status" role="status"></p>
       <p id="sceneStatus" class="system-status"></p>
+      <p id="speechStatus" class="system-status" role="status"></p>
     </main>
 
     <script type="module" src="./src/main.js"></script>
