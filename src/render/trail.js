@@ -33,6 +33,7 @@ export function createTrail(host, onUnavailable) {
   const leaves = ['#284b3c', '#365b43', '#49694b'].map(c => material(c))
   const gold = material('#efbb66', { emissive: '#f8a833', emissiveIntensity: 0.65 })
   const darkGold = material('#726448')
+  const beaconCore = material('#726448', { emissive: '#f8a833', emissiveIntensity: 0 })
   const add = (g, m, x, y, z, parent = scene) => {
     geometry.add(g)
     const mesh = new THREE.Mesh(g, m)
@@ -144,7 +145,15 @@ export function createTrail(host, onUnavailable) {
     })
     if (!snap) ripples.forEach((r, i) => { r.position.x = Math.sin(time * 0.0002 + i * 3) * 4.3 })
     portal.rotation.z = snap ? 0 : Math.sin(time * 0.0003) * 0.08
-    beaconLight.intensity = chapter === 2 ? 15 + target * 7 : 22
+    // The rescue starts dark. Each saved success adds light; the final answer
+    // earns the sky beam. Derive this on every draw so replay and resume agree.
+    const rescuing = chapter === 2
+    const charge = target / 8
+    beaconCore.color.copy(darkGold.color).lerp(gold.color, charge)
+    beaconCore.emissiveIntensity = charge * 1.3
+    portal.material = rescuing ? beaconCore : gold
+    beaconLight.intensity = rescuing ? charge * 72 : 22
+    beam.visible = rescuing && target === 8
     if (!lost) renderer.render(scene, camera)
   }
   function tick(time) {
@@ -168,7 +177,6 @@ export function createTrail(host, onUnavailable) {
   return {
     setChapter(value) {
       chapter = value
-      beam.visible = value === 2
       renderer.toneMappingExposure = value === 2 ? .95 : 1.35
       scene.fog.color.set(value === 2 ? '#30474f' : '#748eaa')
       resume()
