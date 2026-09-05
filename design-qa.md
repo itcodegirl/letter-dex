@@ -121,4 +121,28 @@ The celebration uses illustrated scenery and 2D API artwork; the journey retains
 existing 3D renderer. Phone-sized layouts are outside the tested scope.
 Previous Math Adventure QA is retained at `docs/qa/math-design-qa.md`.
 
+## Concealed discovery follow-up
+
+P2 resolved: the encounter was fully visible before the first footprint under the
+heading “Who is hiding here?” The footprint view now contains no encounter image or
+name in its visible or accessible UI. Artwork is preloaded off-screen; the third
+footprint opens the existing greeting view. Companion copy changes as each step is
+completed. No new visual assets or curriculum changes were needed.
+
+Compared the audit's `outputs/product-design/adventure-audit/03-footprints.png`
+outside the repository with `docs/qa/discovery-concealed.png`. Both are 834 × 1194
+captures before the first footprint. The full-view comparison at
+`outputs/product-design/discovery-surprise-comparison.png` also includes
+`docs/qa/discovery-final-reveal.png` after footprint three. Images were scaled
+proportionally and inspected together. The pre-fix and isolated test sessions have
+different encountered species; this is a layout/state comparison, not a species diff.
+Typography, background crop, gold/green controls, and footprint placement are retained.
+
+Browser checks in an isolated origin: completed a counting quest; verified zero
+encounter images before the final tap; completed footprint one, returned to camp,
+reloaded and resumed at footprint two; completed footprint two without revealing the
+encounter; verified the creature image and name after footprint three; greeted and
+opened the journal. Browser error log was empty. The main game's quest progress was
+not used for this playtest. Full suite: 24 tests passed.
+
 final result: passed
