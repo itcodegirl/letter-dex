@@ -16,6 +16,7 @@ export async function getPokemon(slug, fetcher = globalThis.fetch) {
     }
   })
   resourceCache.set(slug, request)
+  request.catch(() => { if (resourceCache.get(slug) === request) resourceCache.delete(slug) })
   return request
 }
 

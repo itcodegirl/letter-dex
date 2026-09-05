@@ -104,7 +104,7 @@ export class LettersMode {
             <div class="letter">${this.display(answer.letter)}</div>
             <div class="name">${name ?? 'A new path opens.'}</div>`
           speak(`${ROSTER[answer.letter].sound}. ${name ? `${name}. ` : ''}Letter ${answer.letter}.`)
-          this.onCorrect()
+          this.onCorrect({ encounteredSlug: ROSTER[answer.letter].slug })
         },
       })
     }

@@ -30,13 +30,26 @@ vanilla JavaScript modules and requires an HTTP(S) server, not `file://`.
 
 ## Living Trail
 
+### Destination discoveries
+
+Every eight-answer quest leads to one combined celebration: follow three footprints,
+say hello to the encountered Pokémon, then add the destination to the adventure journal.
+The journal offers the next route or a return to camp. Camp also opens past memories
+and resumes an unfinished discovery after a refresh. Repeated greetings and journal
+visits do not award extra catches or badges.
+
+The clearing and blank book are original artwork; creature images and names still load
+from PokéAPI at runtime. If a request fails, the saved encounter and navigation remain
+available, with a button to retry the picture. The existing 3D trail pauses during these
+illustrated celebration screens.
+
 Choose Sound adventure or Word adventure at camp. Listen to the clue and tap an
 answer stone. Correct answers raise the route and move the camera toward the
 clearing; a Pikachu companion offers encouragement. Pokémon artwork is fetched
 at runtime. No Pokémon art is bundled.
 
-Eight correct answers save one quest and award a badge. Choose Next adventure,
-My Pokémon, or Back to camp. Leaving camp or changing modes preserves earned
+Eight correct answers save one quest and award a badge. The destination journal
+offers the next adventure or camp, where My Pokémon remains available. Leaving camp or changing modes preserves earned
 progress. Learning items and collection/session rewards remain separate fields
 in the existing save format. Saves are per browser and origin; use the grown-up
 export/import controls to transfer them to a different device or host.
@@ -47,7 +60,7 @@ over the existing camp artwork. If PokéAPI fails, questions remain playable.
 This is not an offline-installable app or native Android package. Test audio and
 performance on the actual tablet before relying on it for independent play.
 
-Math remains a later curriculum phase; this slice uses the existing reading modes.
+The selected Math Adventure extension is described above; later curriculum phases remain planned.
 
 ## Test
 
