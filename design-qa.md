@@ -172,4 +172,39 @@ returned to camp from each. Math remained at Bridge Builders, 0 of 8. Mission re
 was activated; physical-device speech quality and comprehension were not measured.
 Browser error log was empty. The full 24-test suite passes. Viewport override reset.
 
+## Journal next-destination follow-up
+
+Source: `docs/qa/journal-before-destination.png`; implementation:
+`docs/qa/journal-next-bridge.png`. Both are 834 × 1194 pixel screenshots at
+834 × 1194 CSS pixels, with the same Berry Crossing memory and encounter.
+Both full views were opened together in one comparison input without cropping or
+stretching. The complete view makes the journal page detail legible, so an extra
+region crop was not needed. The existing book, companion, scenery, typography,
+and control placement are retained. The right page now groups the completed
+memory and stamp above a distinct next-destination picture button. No actionable
+P0/P1/P2 visual differences remain.
+
+The three original environment illustrations use the clearing's warm, faceted
+forest style. The bridge's missing deck and the beacon's dark lantern remain
+recognizable at thumbnail size. Pokémon images remain runtime API artwork.
+
+Responsive evidence: `docs/qa/journal-next-compact.png` (600 × 960) and
+`docs/qa/journal-next-landscape.png` (960 × 600). Both document dimensions match
+their viewport with no overflow. The new button measures about 199 × 170px and
+144 × 120px respectively. Spoken invitation text fits in the companion bubble.
+The landscape label wraps inside its button; existing 64px controls remain intact.
+
+Interaction checks used an isolated save: continued from the crossing journal,
+completed eight bridge additions, followed footprints, greeted, and opened the
+beacon preview. Activated its invitation with Enter and observed the matching
+companion text. Reopened an older crossing memory and confirmed its preview and
+action target the current beacon quest. Completed eight beacon problems and
+verified the crossing preview, then reloaded and resumed the same saved journal.
+Evidence: `docs/qa/journal-next-beacon.png` and `journal-next-crossing.png`.
+Preview taps leave the journal open; only the primary button continues play.
+The main game's quest progress was preserved during these checks.
+
+All 24 tests pass; browser error log is empty. Speech invocation was exercised,
+but physical Android speech quality and performance were not measured.
+
 final result: passed
