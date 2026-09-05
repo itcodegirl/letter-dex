@@ -100,6 +100,8 @@ export function createTrail(host, onUnavailable) {
     archStone.rotation.z = -angle
   }
   const portal = add(new THREE.TorusGeometry(1.35, 0.12, 6, 30), gold, 0, 2.3, -34)
+  const beam = add(new THREE.CylinderGeometry(.13, .4, 20, 8), gold, 0, 11, -34)
+  beam.visible = false
   const beaconLight = new THREE.PointLight('#ffcb68', 22, 13)
   beaconLight.position.set(0, 3, -32)
   scene.add(beaconLight)
@@ -110,6 +112,14 @@ export function createTrail(host, onUnavailable) {
     ripple.rotation.x = -Math.PI / 2
     ripples.push(ripple)
   }
+  const bridges = []
+  for (let i = 0; i < 8; i++) {
+    const bridge = new THREE.Group()
+    bridge.position.set(0, 0.3, 2 - i * 4.1)
+    for (let p = 0; p < 5; p++) add(new THREE.BoxGeometry(3.5, 0.2, 0.7), trunk, 0, 0, -1.6 + p * 0.8, bridge)
+    scene.add(bridge); bridges.push(bridge); bridge.visible = false
+  }
+  let chapter = 0
   let target = 0, current = 0, active = true, lost = false, disposed = false, frame = 0, previous = 0
   function resize() {
     const { width, height } = host.getBoundingClientRect()
@@ -125,6 +135,8 @@ export function createTrail(host, onUnavailable) {
     camera.lookAt(0, 0.6, camera.position.z - 18)
     stones.forEach(({ group, ring }, i) => {
       const raised = i < target
+      group.visible = chapter !== 1
+      bridges[i].visible = chapter === 1 && raised
       const y = raised ? 0.17 : -0.72
       group.position.y += (y - group.position.y) * (snap ? 1 : 1 - Math.exp(-delta * 4))
       ring.visible = raised
@@ -132,6 +144,7 @@ export function createTrail(host, onUnavailable) {
     })
     if (!snap) ripples.forEach((r, i) => { r.position.x = Math.sin(time * 0.0002 + i * 3) * 4.3 })
     portal.rotation.z = snap ? 0 : Math.sin(time * 0.0003) * 0.08
+    beaconLight.intensity = chapter === 2 ? 15 + target * 7 : 22
     if (!lost) renderer.render(scene, camera)
   }
   function tick(time) {
@@ -153,6 +166,13 @@ export function createTrail(host, onUnavailable) {
   renderer.domElement.addEventListener('webglcontextrestored', contextRestored)
   resize(); resume()
   return {
+    setChapter(value) {
+      chapter = value
+      beam.visible = value === 2
+      renderer.toneMappingExposure = value === 2 ? .95 : 1.35
+      scene.fog.color.set(value === 2 ? '#30474f' : '#748eaa')
+      resume()
+    },
     setProgress(value) { target = Math.min(8, Math.max(0, value)); resume() },
     setActive(value) { active = value; resume() },
     dispose() {

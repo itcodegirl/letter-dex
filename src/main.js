@@ -19,6 +19,9 @@ import { renderPokedex } from './ui/pokedex-view.js'
 import { RoundLifecycle } from './core/round-lifecycle.js'
 import { getPokemon } from './core/pokeapi.js'
 import { speak } from './core/speech.js'
+import { MathMode } from './modes/math.js'
+import { MATH_STAGES } from '../data/math/adventure.js'
+import { mathJourney, advanceMathJourney } from './core/math-journey.js'
 
 const SESSION_CAP = 8
 
@@ -57,6 +60,8 @@ let mode = state.settings.mode === 'pokedex' ? 'letters' : state.settings.mode
 let sessionEnded = false
 let atCamp = true
 let trail = null
+let completedMathStage = null
+const progressCount = () => mode === 'math' ? mathJourney(state).correct : state.activeSession.correct
 const lifecycle = new RoundLifecycle()
 const engine = new ChooseEngine(elements.keys)
 
@@ -65,7 +70,8 @@ function sceneStatus(unavailable) {
 }
 import('./render/trail.js').then(({ createTrail }) => {
   trail = createTrail(byId('world'), sceneStatus)
-  trail.setProgress(state.activeSession.correct)
+  trail.setProgress(progressCount())
+  trail.setChapter(mode === 'math' ? mathJourney(state).stage : 0)
 }).catch(() => sceneStatus(true))
 window.addEventListener('pagehide', () => { trail?.dispose(); lifecycle.cancel() })
 getPokemon('pikachu').then(pokemon => {
@@ -96,7 +102,7 @@ function handleAttempt(attempt) {
   persist()
 }
 
-function paintProgress(displayCount = state.activeSession.correct) {
+function paintProgress(displayCount = progressCount()) {
   const bounded = Math.min(displayCount, SESSION_CAP)
   trail?.setProgress(bounded)
   elements.count.textContent = `${bounded} of ${SESSION_CAP}`
@@ -118,10 +124,12 @@ function showSessionEnd() {
   lifecycle.cancel()
   sessionEnded = true
   engine.clear()
-  elements.prompt.textContent = 'Quest complete!'
+  const mathEnd = mode === 'math' && completedMathStage !== null
+  elements.prompt.textContent = mathEnd ? `${MATH_STAGES[completedMathStage].name} complete!` : 'Quest complete!'
   elements.stage.className = 'stage finish'
   elements.stage.innerHTML = '<div class="earned-badge" aria-hidden="true">★</div>'
   elements.reveal.innerHTML = '<div class="all-done">Where to next?</div>'
+  byId('nextAdventure').textContent = mathEnd ? MATH_STAGES[completedMathStage].next : 'Next adventure'
   byId('questActions').hidden = false
   byId('nextAdventure').focus()
   byId('buddyLine').textContent = 'We found the way!'
@@ -130,6 +138,7 @@ function showSessionEnd() {
 
 function startNewSession() {
   sessionEnded = false
+  completedMathStage = null
   byId('questActions').hidden = true
   if (state.activeSession.correct >= SESSION_CAP) completeSession(state)
   persist()
@@ -139,6 +148,21 @@ function startNewSession() {
 function handleCorrect(roundId, { caughtSlug } = {}) {
   if (!lifecycle.accept(roundId)) return
   if (caughtSlug) recordCatch(state, caughtSlug)
+  if (mode === 'math') {
+    const chapter = mathJourney(state).stage
+    const completed = advanceMathJourney(state)
+    paintProgress(completed ? SESSION_CAP : progressCount())
+    persist()
+    if (completed) {
+      completedMathStage = chapter
+      sessionEnded = true
+      lifecycle.after(roundId, 1900, showSessionEnd)
+    } else {
+      byId('buddyLine').textContent = MATH_STAGES[chapter].success
+      lifecycle.after(roundId, 2600, () => playRound())
+    }
+    return
+  }
   state.activeSession.correct += 1
   const completed = state.activeSession.correct >= SESSION_CAP
   paintProgress()
@@ -167,6 +191,7 @@ function createController(roundId) {
     settings: { ...state.settings },
     isCurrentRound: () => lifecycle.isCurrent(roundId),
   }
+  if (mode === 'math') return new MathMode({ ...shared, activeLetters })
   return mode === 'words'
     ? new WordsMode({ ...shared, activeLetters })
     : new LettersMode(shared)
@@ -176,7 +201,7 @@ function playRound() {
   if (sessionEnded || mode === 'pokedex' || atCamp) return
   const roundId = lifecycle.begin()
   globalThis.speechSynthesis?.cancel()
-  byId('buddyLine').textContent = 'Listen to the clue. Find the next stone.'
+  byId('buddyLine').textContent = mode === 'math' ? MATH_STAGES[mathJourney(state).stage].mission : 'Listen to the clue. Find the next stone.'
   createController(roundId).play()
 }
 
@@ -212,6 +237,7 @@ async function selectMode(nextMode) {
     await renderPokedex(elements.pokedexView, state.collection)
   } else {
     if (sessionEnded) startNewSession()
+    trail?.setChapter(nextMode === 'math' ? mathJourney(state).stage : 0)
     paintProgress()
     playRound('mode selected')
   }
@@ -238,7 +264,8 @@ byId('backToCamp').addEventListener('click', showCamp)
 byId('nextAdventure').addEventListener('click', () => { startNewSession(); selectMode(mode === 'pokedex' ? 'letters' : mode) })
 byId('startTrail').addEventListener('click', () => selectMode('letters'))
 byId('startWords').addEventListener('click', () => selectMode('words'))
-byId('campListen').addEventListener('click', () => speak('Brody, a mystery is waiting across the stream. Choose a sound adventure or a word adventure.'))
+byId('startMath').addEventListener('click', () => selectMode('math'))
+byId('campListen').addEventListener('click', () => speak('Brody, a mystery is waiting across the stream. Choose a sound, word, or math adventure. Count berries, build a bridge, and rescue the beacon!'))
 
 function activateButtonGroup(root, attribute, value) {
   root.querySelectorAll('button').forEach((button) => {

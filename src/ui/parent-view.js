@@ -1,5 +1,6 @@
 import { LETTER_SETS } from '../../data/reading/letter-sets.js'
 import { WORD_SETS } from '../../data/reading/word-sets.js'
+import { MATH_STAGES, mathItems } from '../../data/math/adventure.js'
 
 function accuracy(item) {
   return item.seen ? Math.round((item.correct / item.seen) * 100) : 0
@@ -18,6 +19,7 @@ export function renderParentView(root, state) {
   const recentCorrect = recentSessions.reduce((sum, session) => sum + session.correct, 0)
 
   const setRows = [
+    ...MATH_STAGES.map((stage, index) => ({ label: `Math · ${stage.name}`, percentage: masteryFor(mathItems(index).map(item => item.id), state) })),
     ...LETTER_SETS.map((set) => ({
       label: `Letters · ${set.label}`,
       percentage: masteryFor(set.letters.map((letter) => `letter-sound:${letter}`), state),
@@ -47,7 +49,7 @@ export function renderParentView(root, state) {
     <div class="accuracy-grid">
       ${items.length ? items.map((item) => `
         <div class="accuracy-item ${item.mastered ? 'mastered' : ''}">
-          <strong>${item.id.split(':')[1]}</strong>
+          <strong>${item.id.startsWith('math-') ? item.id.replace('math-help:', 'Help · ').replace('math-count:', 'Count ').replace('math-add:', 'Add ').replace('math-missing:', '') : item.id.split(':')[1]}</strong>
           <span>${accuracy(item)}%</span>
           <small>${item.correct}/${item.seen}</small>
         </div>

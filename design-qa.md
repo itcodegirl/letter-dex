@@ -1,63 +1,47 @@
-# Letter Dex Campsite Vertical Slice — Design QA
+# Math Adventure design QA
 
-- Source visual truth: `C:\Users\itcod\Documents\Codex\2026-09-03\product-design-plugin-product-design-openai\outputs\letter-dex-option-3-companion-camp.png`
-- Implementation: `http://127.0.0.1:4173/`
-- Implementation screenshot: Codex in-app Browser tab 5 portrait capture retained in the current task (the browser surface does not expose a filesystem screenshot path).
-- Viewport: 834 × 1194 CSS px, device scale factor 1.
-- Source pixels: 1048 × 1501; normalized to the 834 × 1194 portrait viewport for comparison.
-- Implementation pixels: 834 × 1194.
-- State: letter-sound encounter before answer, plus inspected retry and successful-discovery states.
+Scope: all three selected math interactions adapted into the existing Living Trail game, with its persistent mode navigation, runtime Pokémon companion, and moving 3D world. This is not a pixel-identical recreation of the concept scenery.
 
-## Full-view comparison evidence
+## Visual evidence
 
-The source and implementation were reviewed together in the current task. Both use a full-bleed, warm dusk campsite; a centered sound mission; one mystery creature; three oversized lowercase choices; and an eight-stop trail indicator. The implementation preserves the source hierarchy and low reading burden while keeping the existing child-selectable mode switch required by `CLAUDE.md`.
+Source visual truth: the three selected images in `C:/Users/itcod/.codex/generated_images/01a06f76-cae2-7081-8a37-ffed7417a000/`:
 
-Intentional deviations:
+- `exec-5ae46c69-3116-4411-86b2-a6bdf1ef9a20.png` — Berry Crossing
+- `exec-f03283e2-ace2-4c05-8c98-883dc01c39cc.png` — Bridge Builders
+- `exec-ab4586ab-2494-4649-b28e-7262020be431.png` — Beacon Rescue
 
-- The source's invented companion creature is replaced by runtime PokéAPI artwork, initially rendered as a silhouette and revealed after success. This preserves the repository IP boundary.
-- The source's decorative parchment silhouette board is omitted so the real Pokémon artwork remains the focal encounter object.
-- The mode picker remains visible because the approved product rules require the learner to choose the mode.
-- Grown-up controls are collapsed into a small secondary surface and expand separately from play.
+Implementation: `docs/qa/math-counting.png`, `math-addition.png`, and `math-missing.png`.
+Full-view side-by-side comparison: `docs/qa/math-comparison.png`.
+Source rasters are 1048 × 1501; implementation screenshots are 834 × 1194 at the 834 × 1194 CSS tablet viewport. Comparison panels preserve aspect ratios at equal widths; no stretching. All comparisons show unanswered rounds. Quantities vary because the game selects practice items adaptively; progression and hover position also differ. This is an interaction/layout comparison, not a same-question pixel diff.
 
-## Focused-region comparison evidence
+Focused regions were inspected in the full-size game captures: prompt, berry tray, five empty/occupied spaces, Listen, answer choices, and footer. The smaller combined sheet shows overall hierarchy.
 
-- Prompt and Listen control: rounded cream mission prompt and red circular audio control match the source's size, emphasis, and touch affordance.
-- Encounter: the mystery silhouette occupies the center of the scene and reveals sharp official artwork without masking halos.
-- Choices: all three lowercase buttons exceed the 64 px accessibility floor, use strong cream/ink contrast, and retain shape feedback independent of color.
-- Progress: eight distinct stops and a text count reproduce the source's trail-map concept without implying academic mastery.
+## Findings and fixes
 
-## Findings
+- P2 resolved: controls extended below a 944px-high window. Replaced fixed top padding with height-sensitive spacing. Tablet now measures 1194px document height at 1194px viewport height; the revised 1366 × 768 laptop view measures 768px document height.
+- P2 resolved: math objects and prompts were too small relative to the selected designs. Increased tablet berries to 88px, widened counting and five-space trays, enlarged the prompt and Listen control, and used orderly rows for counting.
+- P2 resolved: identical destinations weakened the three-stage distinction. Bridge Builders now constructs visible wooden sections; Beacon Rescue dims the scene and adds a destination beam with increasing light.
 
-- No actionable P0, P1, or P2 visual or interaction mismatches remain.
-- P3: the runtime PokéAPI silhouette varies in shape and apparent scale by Pokémon; a later polish pass could add per-species optical sizing metadata if real-device testing identifies outliers.
-- P3: custom recorded sound clips remain a later approved phase; browsers without speech synthesis still show the complete visual interaction but cannot play the temporary spoken cue.
+## Fidelity surfaces
 
-## Interaction and accessibility verification
+- Typography: existing Nunito, rounded heavy prompt/answer text, readable chapter labels, no clipped mission text.
+- Layout: world above and behind the prompt; interactive objects grouped centrally; equation/help line, replay, three large choices and progress below. Existing mode navigation is intentionally retained.
+- Colors: forest green, cream and warm gold continue the selected visual family. Beacon Rescue uses darker exposure. Hover and focus have visible contrasting treatment.
+- Assets: original generated berry and wood tray images are used in the live controls. Existing stone texture remains on answers. The companion uses PokéAPI artwork at runtime. Existing geometric scenery remains simpler than the illustrated references; the moving game world is retained instead of embedding a screenshot. Empty spaces use a standard Material Symbols icon for a clear touch target.
+- Copy: all three named chapters, counting/addition/missing-amount prompts, replay, retries, stage-specific completion actions, and optional camp return are implemented.
 
-- Listen is a repeatable real button with an accessible name.
-- An incorrect letter keeps the same encounter, records the attempt, applies non-color shape/motion feedback, and changes the prompt to “Listen, then try again.”
-- A correct letter reveals the Pokémon, disables all answer keys, records progress, advances the trail, and transitions to the next encounter.
-- Words mode still opens with its Listen control and renders three choices.
-- Pokédex empty state and grown-up progress/settings remain reachable.
-- Keyboard-visible focus, 64 px minimum targets, polite reveal announcements, and reduced-motion CSS remain present.
-- Portrait and landscape tablet layouts keep the primary controls visible and protect the central play scene.
-- Browser console: no errors or warnings observed.
-- Automated suite: 12/12 passing.
+## Interaction checks
 
-## Comparison history
+- Played all 24 questions through all three completions and Explore again.
+- Repeated Listen, recovered from an incorrect answer, and verified tapping one berry twice counts it once.
+- Verified a correct missing-amount response fills all five spaces.
+- Reloaded during Beacon Rescue; stage and 1-of-8 progress returned.
+- Math persistence tests cover all stages, existing reading progress, old backups, and supported practice without independent mastery.
+- Laptop berry controls measure 70 × 70; answers 110 × 94; Listen at least 68 × 75. Tablet controls are larger.
+- Browser error log returned no errors.
 
-1. Initial implementation exposed a P1 interaction-boundary defect: the app shell used the same `data-mode` attribute as mode buttons, so answer clicks bubbled into a new mode selection.
-2. Fix: renamed the shell state to `data-active-mode`, leaving `data-mode` exclusively on the three navigation buttons.
-3. Post-fix evidence: wrong-answer testing retained the same Pokémon and choices, applied the `wrong` state, preserved `1 of 8`, and displayed the supportive retry prompt. Correct-answer testing revealed Mudkip, disabled the keys, and advanced progress from `1 of 8` to `2 of 8`.
-4. A P2 density issue from duplicate empty badge placeholders was removed; only earned session badges now appear in the header.
+## Remaining checks
 
-## Implementation checklist
-
-- [x] Selected visual translated into a responsive campsite scene.
-- [x] Runtime Pokémon assets kept separate from original environment art.
-- [x] Learning and game progress behavior preserved.
-- [x] Retry, success, mode switching, Pokédex, and grown-up controls tested.
-- [x] Portrait and landscape tablet layouts inspected.
-- [x] Automated tests and JavaScript syntax checks passed.
+Physical Android speech quality, touch comfort, and rendering performance remain unmeasured. The current 3D environment is visually simpler than the concept art; further environmental art is a separate polish pass.
 
 final result: passed

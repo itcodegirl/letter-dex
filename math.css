@@ -1,0 +1,58 @@
+.camp-actions { flex-wrap: wrap; }
+#startMath { flex-basis: 100%; background: #edc570; color: #30291c; border-color: #ffebba; }
+[data-active-mode="math"] #playView { min-height: calc(100dvh - 270px); }
+[data-active-mode="math"] .screen { gap: 6px; }
+.math-stage { width: min(100%,720px); height: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.math-chapter { margin: 0; color: #ffe2a0; font-weight: 1000; font-size: 1rem; text-shadow: 0 2px 6px #142b28; }
+.math-chapter span { font-weight: 600; font-size: .8rem; }
+.math-objects { width: 100%; display: flex; justify-content: center; align-items: center; gap: 10px; }
+.berry-tray { background: url('./assets/math/tray.png') center / 100% 100% no-repeat; min-height: 145px; padding: 30px 35px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 3px; max-width: 500px; flex: 1; }
+.berry { width: 70px; height: 70px; flex: 0 0 70px; border: 2px solid transparent; background: transparent; position: relative; padding: 0; border-radius: 15px; cursor: pointer; }
+.berry img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.berry.counted { border-color: #fff6c2; }
+.berry-count { position: absolute; bottom: 0; right: 0; background: #fff7dd; color: #263e31; border-radius: 8px; font-size: 1rem; font-weight: 1000; min-width: 23px; }
+.empty-slot .material-symbols-rounded { color: #fff1b9; font-size: 52px; text-shadow: 0 2px 3px #3b2311; }
+.five-tray { flex-wrap: nowrap; gap: 4px; max-width: 540px; }
+.math-plus { color: #ffdc85; font-size: 3.2rem; font-weight: 1000; }
+.math-equation { margin: 0; color: #fff1c5; font-size: clamp(1.05rem,3vw,1.6rem); font-weight: 800; text-shadow: 0 2px 7px #102520; }
+.math-listen { position: static; flex-shrink: 0; width: 85px; min-height: 85px; transform: none; }
+.math-solved { animation: math-reward .5s ease-out; }
+.math-layout-0 .berry-tray { display: grid; justify-items: center; max-width: 620px; }
+.math-layout-1.math-solved .berry-tray:first-child { transform: translateX(12px); }
+.math-layout-1.math-solved .berry-tray:last-child { transform: translateX(-12px); }
+.berry-tray { transition: transform .4s; }
+@media(min-height:900px) and (min-width:600px) {
+  [data-active-mode="math"] .prompt { font-size: 1.8rem; }
+  .math-chapter { font-size: 1.2rem; }
+  .berry { width: 88px; height: 88px; flex-basis: 88px; }
+  .berry-tray { min-height: 180px; padding: 35px 40px; }
+  .five-tray { max-width: 650px; }
+  .math-listen { width: 100px; min-height: 100px; }
+}
+@keyframes math-reward { 50% { transform: translateY(-10px); } }
+[data-active-mode="math"] .buddy { top: 185px; bottom: auto; }
+[data-active-mode="math"] .reveal { text-align: center; padding: 5px 12px; color: #fff8e7; background: #183d34e8; border-radius: 12px; }
+[data-active-mode="math"] .reveal:empty { background: none; padding: 0; }
+@media (min-height: 900px) { [data-active-mode="math"] #playView { padding-top: clamp(20px,calc(100dvh - 1000px),190px); } }
+@media (orientation:landscape) and (max-height:800px) {
+  [data-active-mode="math"] #playView { min-height: 0; }
+  .math-stage { gap: 4px; }
+  [data-active-mode="math"] .stage { margin-block: 0; }
+  [data-active-mode="math"] .screen { gap: 0; }
+  [data-active-mode="math"] .foot { margin-top: 8px; }
+  .berry-tray { padding: 16px 28px; min-height: 104px; }
+  .math-listen { width: 68px; min-height: 68px; }
+  [data-active-mode="math"] .key { height: 94px; width: 110px; font-size: 3rem; }
+  [data-active-mode="math"] .keys .key:nth-child(3) { width: 110px; }
+  [data-active-mode="math"] .buddy { top: 150px; width: 125px; }
+}
+@media(max-width:560px) {
+  .modes button { padding-inline: 8px; }
+  [data-active-mode="math"] #playView { padding-top: 100px; }
+  .berry-tray { padding: 20px 8px; gap: 0; }
+  .berry { width: 64px; height: 64px; flex-basis: 64px; }
+  .five-tray { padding-inline: 0; overflow-x: auto; justify-content: flex-start; }
+  .math-objects { gap: 2px; }
+  .math-plus { font-size: 1.8rem; }
+  .math-chapter { font-size: .9rem; }
+}

@@ -1,5 +1,18 @@
 # Letter Dex
 
+## Math adventure
+
+Choose **Math adventure** at camp, or **Math** in the mode bar. Eight counting challenges
+at Berry Crossing lead to eight picture-addition challenges in Bridge Builders and eight
+missing-amount challenges in Beacon Rescue. Each stage offers a choice to continue or
+return to camp. Tap berries (or empty spaces) once to count along; use Listen to repeat
+the mission. Supported practice is recorded separately from independent math mastery.
+
+The math route saves separately from reading progress in the existing local backup.
+Correct math answers add Pokémon to the collection using the active letter roster.
+The route uses original berry/tray art and the existing 3D scene; companion artwork is
+still loaded from PokéAPI at runtime. Physical Android audio and performance remain a device check.
+
 Letter Dex is a private family prototype for kindergarten reading practice. It
 uses Pokémon sound anchors and artwork loaded at runtime from PokéAPI. It is not
 affiliated with, sponsored by, or endorsed by Nintendo, The Pokémon Company, or
