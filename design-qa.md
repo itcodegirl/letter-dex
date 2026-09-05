@@ -95,6 +95,27 @@ Reduced motion makes the greeting animation effectively static.
 
 ## Remaining checks
 
+### Compact tablet math playthrough
+
+The next playtest covered the actual learning rounds at 600 × 960 and 960 × 600,
+in addition to the discovery screens. P2 resolved: the 88px berries stacked into tall
+addition groups at 600px width, producing 1033px document height. Compact portrait
+trays now use 70px targets and two-column groups where needed; document height is 960px.
+P2 resolved: landscape math produced 693px document height at 600px viewport height.
+Listen now sits beside the trays in compact landscape, with 64px berry targets and
+tighter vertical spacing; document height is 600px. The 1 + 4 group fits on one row.
+
+Played the remaining Bridge Builders questions, its footprints/greeting/journal,
+all eight Beacon Rescue questions, and its discovery through Explore again. The game
+returned to Berry Crossing at 0 of 8. Also exercised an incorrect addition answer and
+count-along help on an empty space. No forced stop or lost progress occurred. Counting,
+addition, and missing-amount layouts were inspected; browser error log was empty.
+
+Evidence: `docs/qa/math-compact-counting.png`, `math-compact-addition.png`,
+`math-compact-beacon.png`, and `math-compact-landscape.png`. These are responsive
+adaptations of the selected Math Adventure designs; larger tablet/laptop layouts
+are preserved by the scoped breakpoints. Temporary viewport overrides were removed.
+
 Physical Android speech quality, touch comfort, and performance remain unmeasured.
 The celebration uses illustrated scenery and 2D API artwork; the journey retains its
 existing 3D renderer. Phone-sized layouts are outside the tested scope.

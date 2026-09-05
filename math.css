@@ -56,3 +56,24 @@
   .math-plus { font-size: 1.8rem; }
   .math-chapter { font-size: .9rem; }
 }
+@media(min-width:561px) and (max-width:740px) {
+  .berry { width:70px; height:70px; flex-basis:70px; }
+  .berry-tray { padding:24px 18px; min-height:145px; }
+  .math-listen { width:85px; min-height:85px; }
+  [data-active-mode="math"] .prompt { font-size:1.5rem; }
+}
+@media(orientation:landscape) and (max-height:650px) {
+  .dex[data-active-mode="math"]:not([data-discovery]) { padding-top:12px; padding-bottom:12px; }
+  [data-active-mode="math"] .modes { margin-block:6px; }
+  [data-active-mode="math"] .prompt { min-height:44px; margin-bottom:6px; padding-block:8px; }
+  .math-stage { display:grid; grid-template-columns:minmax(0,1fr) 76px; gap:4px 10px; }
+  .math-chapter { grid-column:1 / -1; grid-row:1; text-align:center; }
+  .math-objects { grid-column:1; grid-row:2; }
+  .math-listen { grid-column:2; grid-row:2; }
+  .math-equation { grid-column:1 / -1; grid-row:3; text-align:center; }
+  .berry { width:64px; height:64px; flex-basis:64px; }
+  .berry-tray { padding:8px 12px; min-height:84px; }
+  [data-active-mode="math"] .foot { min-height:35px; }
+  [data-active-mode="math"]:not([data-discovery]) .buddy { top:170px; width:100px; }
+  [data-active-mode="math"]:not([data-discovery]) .buddy img { width:64px; height:64px; }
+}
