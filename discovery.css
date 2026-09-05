@@ -45,6 +45,7 @@
 .journal-list { display:flex; flex-direction:column; gap:14px; max-width:620px; width:100%; margin:30px 0; }
 .journal-entry { padding:18px; min-height:80px; border-radius:16px; background:#fff1d0; color:#254232; border:2px solid #d6b675; font-weight:800; cursor:pointer; }
 .friend-wave { animation:friend-wave .7s ease-in-out; }
+@media (prefers-reduced-motion: reduce) { .friend-wave { animation: none; } }
 @keyframes friend-wave { 35% { transform:translateY(-14px) rotate(-5deg); } 70% { transform:rotate(4deg); } }
 @media(min-height:1000px) { .discovery-creature { padding-top:90px; } .journal-spread { margin-top:130px; } }
 @media(orientation:landscape) and (max-height:850px) {

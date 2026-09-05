@@ -10,6 +10,9 @@ export async function getPokemon(slug, fetcher = globalThis.fetch) {
       slug,
       name: data.name,
       artwork: data.sprites?.other?.['official-artwork']?.front_default ?? data.sprites?.front_default,
+      animatedArtwork: data.sprites?.other?.showdown?.front_default
+        ?? data.sprites?.versions?.['generation-v']?.['black-white']?.animated?.front_default
+        ?? null,
       height: data.height,
       weight: data.weight,
       types: data.types?.map((entry) => entry.type.name) ?? [],

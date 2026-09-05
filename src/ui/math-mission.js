@@ -1,5 +1,6 @@
 import { getPokemon } from '../core/pokeapi.js'
 import { speak } from '../core/speech.js'
+import { mountPokemonPortrait } from './pokemon-portrait.js'
 
 const MISSIONS = [
   {
@@ -45,6 +46,7 @@ export function createMathMission(root, { stage = 0, correct = 0, setName = '', 
   const token = {}
   activeMissions.set(root, token)
   let complete = false
+  const portraits = []
   const current = () => activeMissions.get(root) === token && isCurrentRound()
   const canListen = () => current() && !complete
   root.className = 'math-mission'
@@ -82,7 +84,14 @@ export function createMathMission(root, { stage = 0, correct = 0, setName = '', 
       <span class="math-mission-name"></span>
       <span class="math-mission-tap"><span class="material-symbols-rounded" aria-hidden="true">volume_up</span>Tap to listen</span>`
     button.querySelector('.math-mission-name').textContent = placeholder
-    button.addEventListener('click', () => { if (canListen()) listen() })
+    button.addEventListener('click', () => {
+      if (!canListen()) return
+      const portrait = button.querySelector('.math-mission-portrait')
+      portrait.classList.remove('mission-listening')
+      void portrait.offsetWidth
+      portrait.classList.add('mission-listening')
+      listen()
+    })
     container.append(button)
     const ready = getPokemon(slug).then(pokemon => {
       if (!current()) return
@@ -94,17 +103,15 @@ export function createMathMission(root, { stage = 0, correct = 0, setName = '', 
       const image = document.createElement('img')
       image.alt = ''
       image.decoding = 'async'
-      image.addEventListener('load', () => {
-        if (!current()) return
-        portrait.classList.add('has-artwork')
-      })
-      image.addEventListener('error', () => {
-        if (!current()) return
-        image.remove()
-        portrait.classList.remove('has-artwork')
-      })
-      image.src = pokemon.artwork
       portrait.append(image)
+      portraits.push(mountPokemonPortrait(image, pokemon, {
+        onLoad: () => { if (current()) { image.hidden = false; portrait.classList.add('has-artwork') } },
+        onError: () => {
+          if (!current()) return
+          image.hidden = true
+          portrait.classList.remove('has-artwork')
+        },
+      }))
     }).catch(() => {
       if (!current()) return
       // The instruction and tap target remain usable when a portrait cannot load.
@@ -120,6 +127,7 @@ export function createMathMission(root, { stage = 0, correct = 0, setName = '', 
     celebrate(answer) {
       if (!current() || complete) return
       complete = true
+      root.querySelectorAll('.mission-listening').forEach(portrait => portrait.classList.remove('mission-listening'))
       root.classList.add('is-complete')
       request.textContent = mission.success(answer)
       guide.button.disabled = true
@@ -127,6 +135,7 @@ export function createMathMission(root, { stage = 0, correct = 0, setName = '', 
     },
     destroy() {
       if (activeMissions.get(root) === token) activeMissions.delete(root)
+      portraits.forEach(portrait => portrait.destroy())
     },
   }
 }

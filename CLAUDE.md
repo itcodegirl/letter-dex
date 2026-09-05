@@ -59,7 +59,10 @@ tiebreaker on any conflict. Read PLAN.md for scope and build order.
 - Static site, no build step. Run with `npm start` or a private HTTP(S) static host.
   ES modules require a server; `file://` is unsupported. Offline installation is future work.
 - PokéAPI: one fetch per resource per session, cached in a `Map`; preload the next round's sprite.
-  Sprite path is `sprites.other['official-artwork'].front_default`. PokéAPI asks for caching
+  Still artwork uses `sprites.other['official-artwork'].front_default`. The approved animated
+  Pokémon slice uses `sprites.other.showdown.front_default`, with the generation-V animated
+  sprite as fallback when available. Reduced motion and unavailable animation use still artwork.
+  PokéAPI asks for caching
   rather than enforcing a rate limit — behave as if the limit exists.
 - Speech: `speechSynthesis` until recorded audio lands (phase 3). On iOS speech requires a prior
   user gesture — every round that speaks before he taps must open with a Listen button.

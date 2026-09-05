@@ -13,6 +13,7 @@ export function mathAttempt(item, correct, supported = false) {
 
 export class MathMode {
   constructor(options) { Object.assign(this, options) }
+  destroy() { this.mission?.destroy() }
 
   play() {
     const journey = mathJourney(this.state)
@@ -25,6 +26,7 @@ export class MathMode {
     const mission = createMathMission(elements.mathMission, {
       stage, correct: journey.correct, setName: set.name, isCurrentRound: this.isCurrentRound,
     })
+    this.mission = mission
     const question = stage === 0 ? 'How many berries?' : stage === 1 ? 'How many altogether?' : `How many more make ${item.total}?`
     elements.prompt.textContent = question
     elements.reveal.replaceChildren()

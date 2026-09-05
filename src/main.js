@@ -15,7 +15,8 @@ import {
 import { LettersMode } from './modes/letters.js'
 import { WordsMode } from './modes/words.js'
 import { renderParentView } from './ui/parent-view.js'
-import { renderPokedex } from './ui/pokedex-view.js'
+import { renderPokedex, disposePokedex } from './ui/pokedex-view.js'
+import { mountPokemonPortrait } from './ui/pokemon-portrait.js'
 import { RoundLifecycle } from './core/round-lifecycle.js'
 import { getPokemon } from './core/pokeapi.js'
 import { speak, configureSpeech, cancelSpeech, whenSpeechEnds } from './core/speech.js'
@@ -74,6 +75,16 @@ let navigationVersion = 0
 const progressCount = () => mode === 'math' ? mathJourney(state).correct : state.activeSession.correct
 const lifecycle = new RoundLifecycle()
 const engine = new ChooseEngine(elements.keys)
+let activeController = null
+let companionPortrait = null
+let companionFailed = false
+let pageDisposed = false
+function cancelRound() {
+  lifecycle.cancel()
+  activeController?.destroy()
+  activeController = null
+  disposePokedex(elements.pokedexView)
+}
 function syncMathScene() {
   const world = byId('world')
   const playing = Boolean(elements.appShell.dataset.mathPlaying)
@@ -104,14 +115,28 @@ import('./render/trail.js').then(({ createTrail }) => {
   trail.setChapter(mode === 'math' ? mathJourney(state).stage : 0)
   trail.setActive(!elements.appShell.dataset.discovery && mode !== 'pokedex')
 }).catch(() => sceneStatus(true))
-window.addEventListener('pagehide', () => { trail?.dispose(); lifecycle.cancel(); missionSize.disconnect() })
+window.addEventListener('pagehide', () => {
+  pageDisposed = true
+  trail?.dispose(); cancelRound(); missionSize.disconnect()
+  companionPortrait?.destroy(); discoveryView.cancel()
+})
+// A back/forward-cache restore needs fresh view controllers after pagehide cleanup.
+window.addEventListener('pageshow', event => { if (event.persisted) window.location.reload() })
 function loadCompanion() {
+  if (companionFailed) {
+    companionPortrait?.destroy()
+    companionPortrait = null
+    companionFailed = false
+  }
+  if (companionPortrait || pageDisposed) return
   getPokemon('pikachu').then(pokemon => {
+    if (companionPortrait || pageDisposed) return
     const image = byId('buddyImage')
     image.alt = `${pokemon.name}, your companion`
-    image.onload = () => { image.hidden = false }
-    image.onerror = () => { image.hidden = true }
-    image.src = pokemon.artwork
+    companionPortrait = mountPokemonPortrait(image, pokemon, {
+      onLoad: () => { image.hidden = false },
+      onError: () => { image.hidden = true; companionFailed = true },
+    })
   }).catch(() => {})
 }
 loadCompanion()
@@ -134,7 +159,7 @@ function enterDiscovery() {
   syncMathScene()
   navigationVersion++
   byId('homeButton').hidden = false
-  lifecycle.cancel(); cancelSpeech(); engine.clear()
+  cancelRound(); cancelSpeech(); engine.clear()
   atCamp = false
   elements.playView.hidden = true; elements.pokedexView.hidden = true
   byId('campView').hidden = true; byId('grownSettings').hidden = true
@@ -209,7 +234,7 @@ function paintProgress(displayCount = progressCount(), savedCheckpoint, displayM
 }
 
 function showSessionEnd() {
-  lifecycle.cancel()
+  cancelRound()
   sessionEnded = true
   engine.clear()
   const saved = pendingDiscovery(state)
@@ -300,16 +325,18 @@ function createController(roundId) {
 
 function playRound() {
   if (sessionEnded || mode === 'pokedex' || atCamp) return
+  activeController?.destroy()
   const roundId = lifecycle.begin()
   cancelSpeech()
   byId('buddyLine').textContent = mode === 'math' ? MATH_STAGES[mathJourney(state).stage].mission : 'Listen to the clue. Find the next stone.'
-  createController(roundId).play()
+  activeController = createController(roundId)
+  activeController.play()
 }
 
 async function selectMode(nextMode) {
   const version = ++navigationVersion
   leaveDiscovery()
-  lifecycle.cancel()
+  cancelRound()
   cancelSpeech()
   atCamp = false
   byId('homeButton').hidden = false
@@ -358,7 +385,7 @@ function showCamp() {
   syncMathScene()
   navigationVersion++
   leaveDiscovery()
-  lifecycle.cancel()
+  cancelRound()
   cancelSpeech()
   atCamp = true
   engine.clear()
@@ -388,7 +415,7 @@ function showMathMap() {
   delete elements.appShell.dataset.mathPlaying
   syncMathScene()
   navigationVersion++
-  leaveDiscovery(); lifecycle.cancel(); cancelSpeech(); engine.clear()
+  leaveDiscovery(); cancelRound(); cancelSpeech(); engine.clear()
   atCamp = true
   byId('homeButton').hidden = false
   byId('campView').hidden = true
