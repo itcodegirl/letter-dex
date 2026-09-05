@@ -102,6 +102,13 @@ function showSessionEnd() {
   paintProgress(SESSION_CAP)
 }
 
+function startNewSession() {
+  sessionEnded = false
+  if (state.activeSession.correct >= SESSION_CAP) completeSession(state)
+  persist()
+  paintProgress()
+}
+
 function handleCorrect({ caughtSlug } = {}) {
   if (caughtSlug) recordCatch(state, caughtSlug)
   state.activeSession.correct += 1
@@ -166,9 +173,8 @@ async function selectMode(nextMode) {
   if (collectionMode) {
     engine.clear()
     await renderPokedex(elements.pokedexView, state.collection)
-  } else if (sessionEnded) {
-    showSessionEnd()
   } else {
+    if (sessionEnded) startNewSession()
     playRound('mode selected')
   }
 }
