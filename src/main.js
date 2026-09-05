@@ -22,6 +22,8 @@ import { speak } from './core/speech.js'
 import { MathMode } from './modes/math.js'
 import { MATH_STAGES } from '../data/math/adventure.js'
 import { mathJourney, advanceMathJourney } from './core/math-journey.js'
+import { createDiscovery, pendingDiscovery, discoveries, finishDiscovery } from './core/discoveries.js'
+import { DiscoveryView } from './ui/discovery-view.js'
 
 const SESSION_CAP = 8
 
@@ -64,6 +66,12 @@ let completedMathStage = null
 const progressCount = () => mode === 'math' ? mathJourney(state).correct : state.activeSession.correct
 const lifecycle = new RoundLifecycle()
 const engine = new ChooseEngine(elements.keys)
+const discoveryView = new DiscoveryView(byId('discoveryView'), {
+  save: persist,
+  camp: showCamp,
+  buddy: line => { byId('buddyLine').textContent = line; loadCompanion() },
+  next: entry => { finishDiscovery(state, entry.id); startNewSession(); selectMode(entry.mode) },
+})
 
 function sceneStatus(unavailable) {
   byId('sceneStatus').textContent = unavailable ? 'Simple scenery active. Your adventure still works.' : ''
@@ -72,19 +80,61 @@ import('./render/trail.js').then(({ createTrail }) => {
   trail = createTrail(byId('world'), sceneStatus)
   trail.setProgress(progressCount())
   trail.setChapter(mode === 'math' ? mathJourney(state).stage : 0)
+  trail.setActive(!elements.appShell.dataset.discovery && mode !== 'pokedex')
 }).catch(() => sceneStatus(true))
 window.addEventListener('pagehide', () => { trail?.dispose(); lifecycle.cancel() })
-getPokemon('pikachu').then(pokemon => {
-  const image = byId('buddyImage')
-  image.alt = `${pokemon.name}, your companion`
-  image.onload = () => { image.hidden = false }
-  image.onerror = () => { image.hidden = true }
-  image.src = pokemon.artwork
-}).catch(() => {})
+function loadCompanion() {
+  getPokemon('pikachu').then(pokemon => {
+    const image = byId('buddyImage')
+    image.alt = `${pokemon.name}, your companion`
+    image.onload = () => { image.hidden = false }
+    image.onerror = () => { image.hidden = true }
+    image.src = pokemon.artwork
+  }).catch(() => {})
+}
+loadCompanion()
 
 function persist() {
   byId('saveStatus').textContent = saveProgress(state) ? '' : 'Progress could not be saved. Ask a grown-up to export it.'
   renderParentView(elements.parentView, state)
+  byId('resumeDiscovery').hidden = !pendingDiscovery(state)
+}
+
+function leaveDiscovery() {
+  discoveryView.cancel()
+  byId('discoveryView').hidden = true
+  delete elements.appShell.dataset.discovery
+  document.querySelector('.modes').hidden = false
+}
+
+function enterDiscovery() {
+  lifecycle.cancel(); globalThis.speechSynthesis?.cancel(); engine.clear()
+  atCamp = false
+  elements.playView.hidden = true; elements.pokedexView.hidden = true
+  byId('campView').hidden = true; byId('grownSettings').hidden = true
+  byId('questActions').hidden = true; byId('discoveryView').hidden = false
+  byId('buddy').hidden = false
+  elements.appShell.dataset.discovery = 'true'
+  document.querySelector('.modes').hidden = true
+  trail?.setActive(false)
+}
+
+function showDiscovery(entry, replay = false) {
+  enterDiscovery()
+  elements.sessionProgress.hidden = false
+  paintProgress(SESSION_CAP)
+  discoveryView.show(entry, { replay })
+}
+
+function saveDestination(slug, isNew) {
+  const config = mode === 'math' ? MATH_STAGES[completedMathStage] : null
+  createDiscovery(state, {
+    slug, isNew, mode,
+    title: config?.name ?? (mode === 'words' ? 'Word adventure' : 'Sound adventure'),
+    memory: mode === 'math' ? ['We crossed the river!', 'We built the bridge!', 'We lit the beacon!'][completedMathStage] : 'We found the way!',
+    nextLabel: config?.next ?? 'Next adventure',
+    nextTitle: mode === 'math' ? MATH_STAGES[(completedMathStage + 1) % 3].name : 'Another trail to explore',
+  })
 }
 
 function activeLetters() {
@@ -124,6 +174,8 @@ function showSessionEnd() {
   lifecycle.cancel()
   sessionEnded = true
   engine.clear()
+  const saved = pendingDiscovery(state)
+  if (saved) { showDiscovery(saved); return }
   const mathEnd = mode === 'math' && completedMathStage !== null
   elements.prompt.textContent = mathEnd ? `${MATH_STAGES[completedMathStage].name} complete!` : 'Quest complete!'
   elements.stage.className = 'stage finish'
@@ -145,22 +197,25 @@ function startNewSession() {
   paintProgress()
 }
 
-function handleCorrect(roundId, { caughtSlug } = {}) {
+function handleCorrect(roundId, { caughtSlug, encounteredSlug } = {}) {
   if (!lifecycle.accept(roundId)) return
+  const discoverySlug = caughtSlug ?? encounteredSlug ?? ROSTER[activeLetters()[0]].slug
+  const isNew = !state.collection[discoverySlug]
   if (caughtSlug) recordCatch(state, caughtSlug)
   if (mode === 'math') {
     const chapter = mathJourney(state).stage
     const completed = advanceMathJourney(state)
     paintProgress(completed ? SESSION_CAP : progressCount())
-    persist()
     if (completed) {
       completedMathStage = chapter
+      saveDestination(discoverySlug, isNew)
       sessionEnded = true
       lifecycle.after(roundId, 1900, showSessionEnd)
     } else {
       byId('buddyLine').textContent = MATH_STAGES[chapter].success
       lifecycle.after(roundId, 2600, () => playRound())
     }
+    persist()
     return
   }
   state.activeSession.correct += 1
@@ -170,6 +225,8 @@ function handleCorrect(roundId, { caughtSlug } = {}) {
   if (completed) {
     sessionEnded = true
     completeSession(state)
+    if (!caughtSlug) recordCatch(state, discoverySlug)
+    saveDestination(discoverySlug, isNew)
     persist()
     lifecycle.after(roundId, 1900, showSessionEnd)
     return
@@ -206,6 +263,7 @@ function playRound() {
 }
 
 async function selectMode(nextMode) {
+  leaveDiscovery()
   lifecycle.cancel()
   globalThis.speechSynthesis?.cancel()
   atCamp = false
@@ -245,6 +303,7 @@ async function selectMode(nextMode) {
 }
 
 function showCamp() {
+  leaveDiscovery()
   lifecycle.cancel()
   globalThis.speechSynthesis?.cancel()
   atCamp = true
@@ -256,6 +315,7 @@ function showCamp() {
   byId('buddy').hidden = true
   byId('campView').hidden = false
   byId('grownSettings').hidden = false
+  byId('resumeDiscovery').hidden = !pendingDiscovery(state)
   trail?.setActive(true)
   byId('startTrail').focus()
 }
@@ -265,6 +325,11 @@ byId('nextAdventure').addEventListener('click', () => { startNewSession(); selec
 byId('startTrail').addEventListener('click', () => selectMode('letters'))
 byId('startWords').addEventListener('click', () => selectMode('words'))
 byId('startMath').addEventListener('click', () => selectMode('math'))
+byId('resumeDiscovery').addEventListener('click', () => { const entry = pendingDiscovery(state); if (entry) showDiscovery(entry) })
+byId('openJournal').addEventListener('click', () => {
+  enterDiscovery(); elements.sessionProgress.hidden = true
+  discoveryView.history(discoveries(state), entry => showDiscovery(entry, entry.step === 'journal'))
+})
 byId('campListen').addEventListener('click', () => speak('Brody, a mystery is waiting across the stream. Choose a sound, word, or math adventure. Count berries, build a bridge, and rescue the beacon!'))
 
 function activateButtonGroup(root, attribute, value) {

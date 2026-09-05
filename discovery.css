@@ -1,0 +1,71 @@
+.camp-memories { display:flex; justify-content:center; flex-wrap:wrap; gap:12px; }
+.camp-memories button,.discovery-secondary,.discovery-retry,.discovery-hear { border:2px solid #d9c18c; color:#fff4d4; background:#163d32; border-radius:18px; min-height:64px; padding:10px 22px; font-weight:800; cursor:pointer; }
+.dex[data-discovery] { background:#203b2c url('./assets/discovery/clearing.png') center / cover fixed; }
+.dex[data-discovery] .badges { display:none; }
+#discoveryView { width:min(100%,900px); margin:15px auto 0; text-align:center; color:#fff7df; min-height:calc(100dvh - 215px); display:flex; flex-direction:column; align-items:center; }
+.discovery-chapter { color:#fff2cb; padding:8px 24px; border-radius:20px; background:#173d32ee; font-weight:800; margin:5px 0; }
+#discoveryView h1 { font-size:clamp(2rem,5vw,3.8rem); line-height:1.08; margin:12px 0; letter-spacing:-.02em; max-width:680px; color:#ffe7a3; text-shadow:0 3px 12px #12332c; }
+.discovery-creature { flex:1; min-height:230px; width:min(60vw,370px); display:grid; place-items:end center; }
+.discovery-creature img { width:100%; max-height:330px; object-fit:contain; filter:drop-shadow(0 12px 10px #112e2c88); }
+.discovery-creature.peeking { min-height:120px; width:190px; margin-left:30%; }
+.peeking img { max-height:180px; }
+.discovery-name { font-size:clamp(1.4rem,4vw,2.4rem); line-height:1.15; margin:10px 0; padding:8px 25px; color:#fff4d7; font-weight:1000; background:#173c31e8; border-radius:22px; }
+.discovery-hint { font-weight:800; background:#173c31e8; border-radius:12px; padding:8px 18px; }
+.footprint-path { display:flex; flex-direction:column-reverse; align-items:center; gap:12px; margin:5px 0 15px; }
+.footprint { position:relative; width:108px; height:85px; border:3px solid #ffdf93; border-radius:45%; background:#c49651 url('./assets/trail/stone-surface.png') center / cover; color:#30261a; cursor:pointer; box-shadow:0 6px 0 #634d2c; }
+.footprint .material-symbols-rounded { font-size:40px; }
+.footprint > span:last-child { font-weight:1000; font-size:1.1rem; margin-left:5px; }
+.footprint:nth-child(1) { margin-left:-150px; }
+.footprint:nth-child(3) { margin-left:150px; }
+.footprint:disabled { opacity:.7; cursor:default; }
+.footprint.followed { opacity:1; color:#163c26; }
+.footprint:not(:disabled) { box-shadow:0 6px 0 #695327,0 0 24px #ffda86; }
+.discovery-controls { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; width:100%; margin-top:auto; padding-top:10px; }
+.discovery-primary { min-height:74px; padding:14px 32px; border:3px solid #ffe8ae; border-radius:24px; background:#efc365; color:#3b2c17; font-size:clamp(1.15rem,3vw,1.65rem); font-weight:1000; cursor:pointer; box-shadow:0 5px 0 #896738; }
+.discovery-primary .material-symbols-rounded,.discovery-secondary .material-symbols-rounded { vertical-align:middle; }
+.discovery-status { background:#173d32e8; border-radius:12px; margin:6px 0; font-size:.9rem; padding:5px 12px; }
+.discovery-status:empty { display:none; }
+.discovery-teaser { font-size:1.1rem; background:#173d32e8; border-radius:12px; padding:8px 20px; font-weight:800; }
+.dex[data-discovery] .buddy { top:35%; left:20px; bottom:auto; width:135px; }
+.dex[data-discovery] .buddy img { width:110px; height:110px; }
+.journal-spread { position:relative; width:min(100%,800px); aspect-ratio:1.514; background:url('./assets/discovery/journal.png') center / 100% 100% no-repeat; margin:auto 0; color:#233d2d; }
+.journal-page { position:absolute; top:15%; bottom:17%; width:36%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; }
+.journal-left { left:10%; }
+.journal-right { right:10%; }
+.journal-left > img { min-height:0; width:100%; max-height:58%; object-fit:contain; }
+.journal-page .discovery-name { color:#234032; background:none; padding:0; margin:0; font-size:clamp(1.15rem,3.4vw,2rem); }
+.discovery-hear { display:flex; align-items:center; justify-content:center; gap:5px; color:#263c2e; background:#edcc80; padding:8px 12px; font-size:.85rem; }
+.journal-right h2 { font-size:clamp(1.1rem,3vw,1.6rem); line-height:1.15; margin:0; }
+.route-memory { width:70%; max-height:50%; object-fit:cover; border-radius:10px; }
+.journey-stamp { font-size:.8rem; font-weight:800; margin:0; }
+.journey-stamp .material-symbols-rounded { vertical-align:middle; }
+.journal-list { display:flex; flex-direction:column; gap:14px; max-width:620px; width:100%; margin:30px 0; }
+.journal-entry { padding:18px; min-height:80px; border-radius:16px; background:#fff1d0; color:#254232; border:2px solid #d6b675; font-weight:800; cursor:pointer; }
+.friend-wave { animation:friend-wave .7s ease-in-out; }
+@keyframes friend-wave { 35% { transform:translateY(-14px) rotate(-5deg); } 70% { transform:rotate(4deg); } }
+@media(min-height:1000px) { .discovery-creature { padding-top:90px; } .journal-spread { margin-top:130px; } }
+@media(orientation:landscape) and (max-height:850px) {
+  #discoveryView { min-height:calc(100dvh - 200px); }
+  #discoveryView h1 { font-size:2.2rem; }
+  .discovery-creature { min-height:130px; width:215px; }
+  .discovery-creature img { max-height:215px; }
+  .discovery-creature.peeking { width:130px; min-height:80px; }
+  .peeking img { max-height:100px; }
+  .footprint-path { flex-direction:row; gap:35px; }
+  .footprint:nth-child(n) { margin-left:0; }
+  .journal-spread { width:480px; margin:0; }
+  .discovery-teaser { margin:6px 0; }
+  .journal-page .discovery-name { font-size:1.3rem; }
+  .journal-right h2 { font-size:1.15rem; }
+  .journey-stamp { font-size:.65rem; }
+  .journal-page { top:13%; bottom:12%; }
+  .discovery-primary { min-height:64px; }
+}
+@media(max-width:560px) {
+  .dex[data-discovery] .buddy { width:88px; left:8px; top:220px; }
+  .dex[data-discovery] .buddy img { width:65px; height:65px; }
+  .discovery-creature { width:210px; }
+  #discoveryView[data-step="journal"] { min-height:740px; }
+  .journal-spread { min-width:460px; margin:100px -30px 40px; }
+  .discovery-controls { flex-direction:column; align-items:stretch; }
+}

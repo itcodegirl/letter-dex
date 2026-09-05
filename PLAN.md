@@ -1,9 +1,19 @@
 # Letter Dex — PLAN.md
 
 Status: **Phase 0 approved by Jenna on 2 Sep 2026. Later phases remain plan-only until approved.**
-Last updated: 4 Sep 2026.
+Last updated: 5 Sep 2026.
 
 ## Living Trail implementation slice (selected 5 Sep 2026)
+
+### Destination celebration (selected 5 Sep 2026)
+
+Jenna selected all three celebration designs as one flow: follow three footprints,
+greet the encountered Pokémon, and remember the destination in an adventure journal.
+This follows eight-answer quests in sounds, words, and math. An unfinished discovery
+resumes from camp, and older journal entries can be revisited without awarding rewards
+again. Continuation and returning to camp remain optional. The illustrated clearing
+and book use original art; Pokémon artwork and names come from PokéAPI at runtime.
+The existing Choose engine and curriculum data are unchanged by this slice.
 
 ### Math Adventure extension (selected 5 Sep 2026)
 
