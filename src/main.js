@@ -18,7 +18,8 @@ import { renderParentView } from './ui/parent-view.js'
 import { renderPokedex } from './ui/pokedex-view.js'
 import { RoundLifecycle } from './core/round-lifecycle.js'
 import { getPokemon } from './core/pokeapi.js'
-import { speak } from './core/speech.js'
+import { speak, configureSpeech } from './core/speech.js'
+import { createVoiceSettings } from './ui/voice-settings.js'
 import { MathMode } from './modes/math.js'
 import { MATH_STAGES } from '../data/math/adventure.js'
 import { mathJourney, advanceMathJourney } from './core/math-journey.js'
@@ -436,6 +437,7 @@ elements.importInput.addEventListener('change', async () => {
     mode = state.settings.mode === 'pokedex' ? 'letters' : state.settings.mode
     persist()
     buildSettings()
+    voiceSettings.refresh()
     paintProgress()
     await selectMode(mode)
     elements.backupStatus.textContent = 'Progress imported.'
@@ -444,6 +446,21 @@ elements.importInput.addEventListener('change', async () => {
   } finally {
     elements.importInput.value = ''
   }
+})
+
+configureSpeech({
+  getVoiceURI: () => state.settings.speechVoice ?? '',
+  getRate: () => state.settings.speechRate ?? 0.7,
+})
+const voiceSettings = createVoiceSettings({
+  select: byId('speechVoice'),
+  pace: byId('speechPace'),
+  preview: byId('previewVoice'),
+  status: byId('voiceStatus'),
+  getVoiceURI: () => state.settings.speechVoice ?? '',
+  getRate: () => state.settings.speechRate ?? 0.7,
+  onChange: value => { state.settings.speechVoice = value; persist() },
+  onRateChange: value => { state.settings.speechRate = value; persist() },
 })
 
 buildSettings()

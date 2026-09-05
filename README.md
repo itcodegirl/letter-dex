@@ -70,6 +70,21 @@ The selected Math Adventure extension is described above; later curriculum phase
 
 ## Test
 
+### Choose an adventure voice
+
+Open **Grown-up settings & progress → Adventure voice**. Choose an available
+voice and speaking pace, then press **Try voice** to hear a short sample including
+Totodile. The choice applies to the whole game and is saved with progress.
+New or older saves without a pace choice use Gentle speech with normal pitch.
+Segmented words retain their slightly slower pace relative to other prompts.
+
+Voice availability and pronunciation vary by browser and device. If a saved
+voice is unavailable, speech uses the browser default and settings explains the
+fallback. Choose a new voice on that device if needed. This remains browser
+speech; it does not add recorded voices or approve the later recording phase.
+
+### Automated checks
+
 ```powershell
 npm test
 ```
