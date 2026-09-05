@@ -1,0 +1,151 @@
+.math-mission {
+  --mission-cream: #fff4d9;
+  --mission-ink: #153b31;
+  --mission-gold: #f0c76f;
+  --mission-portrait: clamp(160px, 24vw, 220px);
+  position: relative;
+  flex: 0 0 auto;
+  width: min(100%, 1000px);
+  height: var(--math-mission-height, clamp(240px, 42dvh, 500px));
+  min-height: calc(var(--mission-portrait) + 190px);
+  margin: 0 auto;
+  isolation: isolate;
+  color: var(--mission-cream);
+}
+
+[data-math-playing] .math-mission { flex: 1 0 300px; height: auto; min-height: 300px; }
+
+.math-mission-heading {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 12px 23px;
+  border: 1px solid #b3c09680;
+  border-radius: 26px;
+  background: #102f2bef;
+  box-shadow: 0 8px 24px #09272255;
+  text-align: center;
+}
+
+.math-mission-heading > .material-symbols-rounded { color: var(--mission-gold); font-size: 2.4rem; }
+.math-mission-objective { margin: 0; font-size: clamp(1.4rem, 3.6vw, 2.25rem); font-weight: 1000; line-height: 1.12; }
+.math-mission-title { margin: 4px 0 0; color: var(--mission-gold); font-size: clamp(.8rem, 1.8vw, 1rem); font-weight: 800; }
+
+.math-mission-companion {
+  position: absolute;
+  bottom: 6px;
+  width: var(--mission-portrait);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.math-mission-guide { left: clamp(0px, 2vw, 22px); }
+.math-mission-friend { right: clamp(0px, 2vw, 22px); }
+.math-mission-request {
+  position: relative;
+  z-index: 1;
+  width: calc(100% + 6px);
+  margin: 0 0 8px;
+  padding: 11px 13px;
+  border: 2px solid #eadfb6;
+  border-radius: 23px 22px 6px 23px;
+  color: var(--mission-ink);
+  background: var(--mission-cream);
+  box-shadow: 0 6px 15px #132c2744;
+  text-align: center;
+  font-size: clamp(.95rem, 2.1vw, 1.2rem);
+  font-weight: 1000;
+  line-height: 1.3;
+}
+
+.math-mission-pokemon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 64px;
+  min-height: 64px;
+  padding: 0 4px 5px;
+  border: 2px solid transparent;
+  border-radius: 30px;
+  color: var(--mission-cream);
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.math-mission-pokemon:hover:not(:disabled) { background: #153a3038; }
+.math-mission-pokemon:focus-visible { outline: 4px solid var(--mission-cream); outline-offset: 4px; background: #12382caf; }
+.math-mission-pokemon:active:not(:disabled) .math-mission-portrait { transform: translateY(3px); }
+.math-mission-pokemon:disabled { opacity: 1; cursor: default; }
+.math-mission-portrait {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: var(--mission-portrait);
+  filter: drop-shadow(0 11px 7px #10271ea6);
+}
+.math-mission-portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; }
+.math-mission-portrait.has-artwork img { opacity: 1; }
+.math-mission-placeholder { display: grid; place-items: center; width: 78px; height: 78px; border: 2px solid #d7ca89; border-radius: 50%; font-size: 3rem; color: var(--mission-gold); background: #143b31d9; }
+.math-mission-portrait.has-artwork .math-mission-placeholder { visibility: hidden; }
+.math-mission-name { margin-top: -4px; padding: 2px 12px; border-radius: 20px; background: #123329e8; font-size: 1rem; font-weight: 1000; line-height: 1.3; }
+.math-mission-tap { display: inline-flex; justify-content: center; align-items: center; gap: 4px; margin-top: 3px; padding: 2px 7px; border-radius: 12px; color: #fff4d9; background: #123329e8; font-size: .7rem; font-weight: 800; line-height: 1.3; }
+.math-mission-tap .material-symbols-rounded { font-size: 1rem; }
+.math-mission.is-complete .math-mission-request { border-color: var(--mission-gold); background: #ffe5a3; }
+.math-mission.is-complete .math-mission-portrait { animation: mission-cheer 650ms ease-out 1; }
+.math-mission.is-complete .math-mission-friend .math-mission-portrait { animation-delay: 90ms; }
+.math-mission.is-complete .math-mission-tap { visibility: hidden; }
+
+@keyframes mission-cheer {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  35% { transform: translateY(-14px) rotate(-4deg); }
+  65% { transform: translateY(-5px) rotate(3deg); }
+}
+
+@media (max-width: 560px) {
+  .math-mission { --mission-portrait: clamp(112px, 29vw, 155px); height: var(--math-mission-height, clamp(290px, 43dvh, 420px)); }
+  .math-mission-heading { gap: 6px; padding: 10px 12px; border-radius: 20px; }
+  .math-mission-heading > .material-symbols-rounded { font-size: 1.7rem; }
+  .math-mission-objective { font-size: clamp(1.1rem, 4.5vw, 1.6rem); }
+  .math-mission-title { font-size: .75rem; }
+  .math-mission-request { width: 100%; padding: 8px; font-size: .85rem; border-radius: 18px 18px 5px 18px; }
+  .math-mission-name { font-size: .85rem; }
+  .math-mission-tap { font-size: .63rem; }
+}
+
+@media (orientation: landscape) and (max-height: 800px) {
+  .math-mission { --mission-portrait: clamp(115px, 18dvh, 160px); height: var(--math-mission-height, 260px); min-height: 200px; }
+  .math-mission-heading { padding: 8px 18px; gap: 8px; }
+  .math-mission-objective { font-size: 1.5rem; }
+  .math-mission-title { font-size: .8rem; }
+  .math-mission-request { width: calc(100% + 18px); padding: 8px; font-size: .86rem; }
+  .math-mission-name { font-size: .85rem; }
+}
+
+@media (orientation: landscape) and (max-width: 740px) {
+  .math-mission { min-height: 290px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .math-mission.is-complete .math-mission-portrait { animation: none; }
+  .math-mission-pokemon:active:not(:disabled) .math-mission-portrait { transform: none; }
+}
+
+@media (max-height: 850px) and (min-width: 481px) {
+  [data-math-playing] .math-mission { --mission-portrait: 120px; flex-basis: 190px; min-height: 190px; }
+  [data-math-playing] .math-mission-request { display: none; }
+  [data-math-playing] .math-mission-heading { padding: 7px 16px; }
+  [data-math-playing] .math-mission-objective { font-size: 1.4rem; }
+  [data-math-playing] .math-mission-title { font-size: .8rem; }
+  [data-math-playing] .math-mission-companion { bottom: 0; }
+}

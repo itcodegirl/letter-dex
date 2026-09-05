@@ -29,6 +29,9 @@ export function createTrail(host, onUnavailable) {
   stoneTexture.repeat.set(1.5, 1.5)
   stoneTexture.colorSpace = THREE.SRGBColorSpace
   const rock = material('#d5aa67', { map: stoneTexture, roughness: 1, flatShading: false })
+  const bridgeTexture = new THREE.TextureLoader().load(new URL('../../assets/trail/bridge-wood.png', import.meta.url).href)
+  bridgeTexture.colorSpace = THREE.SRGBColorSpace
+  const bridgeWood = material('#e7d7b9', { map: bridgeTexture, roughness: .95, flatShading: false })
   const grass = material('#405a3c'), trunk = material('#543d31')
   const leaves = ['#284b3c', '#365b43', '#49694b'].map(c => material(c))
   const gold = material('#efbb66', { emissive: '#f8a833', emissiveIntensity: 0.65 })
@@ -117,7 +120,7 @@ export function createTrail(host, onUnavailable) {
   for (let i = 0; i < 8; i++) {
     const bridge = new THREE.Group()
     bridge.position.set(0, 0.3, 2 - i * 4.1)
-    for (let p = 0; p < 5; p++) add(new THREE.BoxGeometry(3.5, 0.2, 0.7), trunk, 0, 0, -1.6 + p * 0.8, bridge)
+    for (let p = 0; p < 5; p++) add(new THREE.BoxGeometry(3.5, 0.2, 0.7), bridgeWood, 0, 0, -1.6 + p * 0.8, bridge)
     scene.add(bridge); bridges.push(bridge); bridge.visible = false
   }
   let chapter = 0
@@ -188,7 +191,7 @@ export function createTrail(host, onUnavailable) {
       document.removeEventListener('visibilitychange', resume)
       renderer.domElement.removeEventListener('webglcontextlost', contextLost)
       renderer.domElement.removeEventListener('webglcontextrestored', contextRestored)
-      geometry.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); stoneTexture.dispose(); renderer.dispose()
+      geometry.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); stoneTexture.dispose(); bridgeTexture.dispose(); renderer.dispose()
       renderer.domElement.remove()
     },
   }

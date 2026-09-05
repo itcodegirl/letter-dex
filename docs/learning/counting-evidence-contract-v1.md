@@ -66,6 +66,13 @@ Current limitations, inspected at main `552ff60`:
 Any later runtime change to support classification or progress reporting needs
 a separately scoped decision and PR. Do not silently redefine existing saves.
 
+Subsequent correction selected on 5 September: Jenna requested longer challenges,
+more sets, and all three mission designs following the engagement pilot. The
+separate math-mission runtime classifies future successful retries as math-help
+practice, alongside count-along help. It does not alter historical records, detect
+adult cues, or turn aggregate exports into a first-response evidence log. See
+the [mission checks](../qa/math-mission-sets-review.md).
+
 ## Validation and change gate
 
 Use the [pilot guide](../qa/counting-pilot-guide.md) and dated results record.
@@ -84,3 +91,8 @@ and Jenna records the decision to reopen expansion. AR/PW stays frozen under
 D-008 unless a concrete blocking dependency is identified and explicitly scoped.
 The selected Living Trail, three math stages, combined discovery, PokéAPI use,
 and all approved `CLAUDE.md` rules remain in force. Merges remain Jenna's.
+
+Jenna's subsequent request narrowly reopens the existing math activities and sets
+through totals of 10, as recorded in PLAN.md. The remaining expansion and device
+validation boundaries above still apply; the earlier pilot is not reclassified
+as passing.

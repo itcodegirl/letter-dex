@@ -47,3 +47,44 @@ test('failed Pokémon requests can retry while successful requests remain cached
   assert.equal(calls,1)
   clearPokemonCache()
 })
+
+test('math memories keep their completed checkpoint through backup and later set changes', () => {
+  const state = emptyProgress()
+  state.sessions.push({ kind: 'math', setId: 'trail-team', stage: 2, correct: 8, completedAt: '2026-09-05T12:00:00.000Z' })
+  state.mathJourney = { setId: 'river-rescue', stage: 0, correct: 0 }
+  const checkpoint = { setId: 'trail-team', stage: 2 }
+  const details = { slug: 'totodile', mode: 'math', checkpoint }
+  const entry = createDiscovery(state, details)
+  checkpoint.setId = 'river-rescue'
+  checkpoint.stage = 0
+  state.mathJourney.correct = 5
+  assert.deepEqual(entry.checkpoint, { setId: 'trail-team', stage: 2 })
+  const restored = importProgress(exportProgress(state))
+  assert.deepEqual(pendingDiscovery(restored).checkpoint, { setId: 'trail-team', stage: 2 })
+  assert.equal(createDiscovery(state, details), entry)
+  assert.equal(state.discoveries.length, 1)
+  assert.equal(state.sessions.length, 1)
+})
+
+test('legacy and invalid discovery checkpoints are omitted without affecting the reward', () => {
+  for (const details of [
+    { mode: 'math' },
+    { mode: 'math', checkpoint: null },
+    { mode: 'math', checkpoint: { setId: '', stage: 0 } },
+    { mode: 'math', checkpoint: { setId: 'bad set', stage: 0 } },
+    { mode: 'math', checkpoint: { setId: 'trail-team', stage: '2' } },
+    { mode: 'math', checkpoint: { setId: 'trail-team', stage: -1 } },
+    { mode: 'math', checkpoint: { setId: 'trail-team', stage: 3 } },
+    { mode: 'words', checkpoint: { setId: 'trail-team', stage: 0 } },
+  ]) {
+    const state = emptyProgress()
+    state.activeSession.correct = 8
+    recordCatch(state, 'abra')
+    completeSession(state)
+    const entry = createDiscovery(state, { slug: 'abra', ...details })
+    assert.equal(Object.hasOwn(entry, 'checkpoint'), false)
+    assert.equal(pendingDiscovery(state), entry)
+    assert.equal(state.collection.abra.count, 1)
+    assert.equal(state.sessions.length, 1)
+  }
+})
