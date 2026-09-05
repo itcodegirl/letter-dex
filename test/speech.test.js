@@ -84,6 +84,23 @@ test('recorded M and S clues precede names without spelling out repeated letters
   })
 })
 
+test('N uses its recorded sound in clues and feedback while its letter name remains speech', () => {
+  speechHarness(({ spoken, clips }) => {
+    speak('NNN')
+    assert.match(clips[0].src, /\/assets\/audio\/sounds\/n\.wav$/)
+    clips[0].onended()
+    assert.equal(spoken.length, 0)
+    speak('That one says nnn. Listen, then try again.')
+    assert.equal(spoken[0].text, 'That one says ')
+    spoken[0].onend()
+    assert.match(clips[1].src, /\/n\.wav$/)
+    clips[1].onended()
+    assert.equal(spoken[1].text, '. Listen, then try again.')
+    speak('Letter N.')
+    assert.equal(spoken[2].text, 'Letter N.')
+  })
+})
+
 test('new speech and navigation cancel a phoneme and reject its late continuation', () => {
   speechHarness(({ spoken, clips }) => {
     speak('mmm. Mudkip. Letter M.')
@@ -116,13 +133,13 @@ test('failed phoneme reports an access problem without falling back to repeated 
 
 test('segmented words sequence phoneme clips and speech before the whole word', () => {
   speechHarness(({ spoken, clips }) => {
-    speakWord(['m', 'a', 's'], { m: { sounds: ['mmm'] }, a: { sounds: ['ah'] }, s: { sounds: ['sss'] } })
+    speakWord(['m', 'a', 'n'], { m: { sounds: ['mmm'] }, a: { sounds: ['ah'] }, n: { sounds: ['nnn'] } })
     clips[0].onended()
     assert.equal(spoken[0].text, '. ah. ')
     spoken[0].onend()
-    assert.match(clips[1].src, /\/s\.wav$/)
+    assert.match(clips[1].src, /\/n\.wav$/)
     clips[1].onended()
-    assert.equal(spoken[1].text, '. mas.')
+    assert.equal(spoken[1].text, '. man.')
   })
 })
 

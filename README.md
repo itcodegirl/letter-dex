@@ -81,8 +81,8 @@ Segmented words retain their slightly slower pace relative to other prompts.
 Voice availability and pronunciation vary by browser and device. If a saved
 voice is unavailable, speech uses the browser default and settings explains the
 fallback. Choose a new voice on that device if needed. Narration remains browser
-speech. M and S use local phoneme clips to avoid the reported repeated-letter
-pronunciation; Try m sound and Try s sound preview them. Source credits are in
+speech. M, N, and S use local phoneme clips to avoid the reported repeated-letter
+pronunciation; Try m sound, Try n sound, and Try s sound preview them. Source credits are in
 [the sound attribution file](assets/audio/sounds/ATTRIBUTION.md). This narrow
 pilot correction does not approve the full recorded-voice phase.
 

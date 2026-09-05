@@ -44,7 +44,7 @@ and have not been validated by this correction.
 
 ## Verification
 
-- All 33 tests pass, including delayed/unavailable voice fallback, voice and pace
+- All 34 tests pass, including delayed/unavailable voice fallback, voice and pace
   backup round-trip, cancellation before replacement speech, gentle defaults,
   segmented-word order, and the Totodile speech substitution. Phoneme tests cover
   clip-before-name sequencing, cancel/late-callback handling, failure without
@@ -63,3 +63,20 @@ Adult retest of Try m sound and Try s sound: passed on the laptop. Full in-quest
 sound feedback and other phonemes still need listening checks.
 Physical Android audition and child comprehension remain pending. The laptop
 pilot remains open; successful unit tests do not close those checks.
+
+## N sound follow-up
+
+The adult reported "n, n, n" and supplied a screenshot identifying the N answer
+in Sound adventure. N had the same repeated-letter synthesis path as the earlier
+M/S defects. Its `nnn` token now plays a local /n/ clip in the unanswered clue,
+retry feedback, correct-answer feedback, and segmented words. Naming "Letter N"
+still uses ordinary speech. A Try n sound button supports direct adult audition.
+
+The new recording uses the same licensed source family and processing approach;
+its exact source and crop are recorded in the sound attribution file. Tests
+cover uppercase/lowercase N tokens, clip sequencing in feedback, the separate
+letter name, and the final N in a segmented word. All 34 tests pass.
+
+Adult listening confirmation for N is pending. M and S retain their previously
+confirmed laptop status. No broader phoneme validation, curriculum expansion,
+or Android validation is claimed.

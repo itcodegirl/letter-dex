@@ -49,7 +49,7 @@ export function speak(text, options = {}) {
   reportError('')
   const current = generation
   speechFinished = new Promise(resolve => { finishSpeech = resolve })
-  const parts = text.split(/\b(mmm|sss)\b/gi).filter(part => /[a-z0-9]/i.test(part))
+  const parts = text.split(/\b(mmm|nnn|sss)\b/gi).filter(part => /[a-z0-9]/i.test(part))
   const failed = () => {
     if (current !== generation) return
     cancelSpeech()
@@ -59,7 +59,7 @@ export function speak(text, options = {}) {
     if (current !== generation) return
     if (!parts.length) { finishSpeech(); return }
     const part = parts.shift()
-    const sound = { mmm: 'm', sss: 's' }[part.toLowerCase()]
+    const sound = { mmm: 'm', nnn: 'n', sss: 's' }[part.toLowerCase()]
     if (sound) {
       if (typeof Audio === 'undefined') { failed(); return }
       const clip = new Audio(new URL(`../../assets/audio/sounds/${sound}.wav`, import.meta.url).href)

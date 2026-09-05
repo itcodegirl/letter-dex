@@ -469,6 +469,7 @@ const voiceSettings = createVoiceSettings({
 })
 
 byId('previewMSound').addEventListener('click', () => speak('mmm'))
+byId('previewNSound').addEventListener('click', () => speak('nnn'))
 byId('previewSSound').addEventListener('click', () => speak('sss'))
 
 buildSettings()
