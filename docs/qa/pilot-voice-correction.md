@@ -77,6 +77,7 @@ its exact source and crop are recorded in the sound attribution file. Tests
 cover uppercase/lowercase N tokens, clip sequencing in feedback, the separate
 letter name, and the final N in a segmented word. All 34 tests pass.
 
-Adult listening confirmation for N is pending. M and S retain their previously
-confirmed laptop status. No broader phoneme validation, curriculum expansion,
-or Android validation is claimed.
+Adult N listening check passed on the laptop: "yes it sounds better" after
+the request to refresh and try the N sound. M and S retain their previously
+confirmed laptop status. This records acceptance of these isolated sound
+corrections; broader phoneme, in-quest, and Android validation remain open.
