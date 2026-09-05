@@ -1,6 +1,6 @@
 # Letter Dex project audit, 5 September 2026
 
-**Scope:** `letter-brody` `main` at `9b261c3`; `foundational-literacy-curriculum` `main` at `61ba597`; `foundational-literacy-game` `main` at `f4cc206`; five prior analysis documents held locally in the gitignored `Claude outputs/` folder (listed in §2).
+**Scope:** `letter-brody` `main` at `9b261c3`; `foundational-literacy-curriculum` `main` at `61ba597`; `foundational-literacy-game` `main` at `f4cc206`; five prior analysis documents, committed with this audit under `docs/state/` (listed in §2).
 **Method:** every source, data, test, and documentation file in the three repositories was read; `npm test` was run on `letter-brody` (34/34 pass); GitHub issues (none) and pull requests #1–#15 were reviewed; the prior documents were read and each of their findings was re-checked against current `main`. A parallel cross-check pass with adversarial verification was run over the curriculum documents and the prior reports; only findings that survived verification, or that I confirmed in code myself, appear here.
 **Status:** audit and remediation review only. No code or data changed. Merge remains Jenna's.
 
@@ -26,7 +26,7 @@
 
 **foundational-literacy-game:** `README.md`, `AGENTS.md`, `package.json`, all of `src/core/`, `src/main.ts`, `src/ui/app-shell.ts`; `src/game/` and styles by summary.
 
-**Prior analysis documents (local, uncommitted):** "Letter Dex — Current Project State Report" (4 Sep), "Brody Projects — Addendum: the three connected repositories" (4 Sep), "Draft decision — which game ships" (the D-008 draft, since accepted verbatim), "Letter Dex — System Design" (5 Sep, design only), "ADR-001: Application delivery and the `file://` requirement" (5 Sep, proposed). Thirteen further uploaded files were byte-identical to files already in the repositories.
+**Prior analysis documents (now in `docs/state/`):** `2026-09-04-current-state-report.md`, `2026-09-04-three-repositories-addendum.md`, `2026-09-04-d008-two-games-convergence-draft.md` (since accepted verbatim as D-008), `2026-09-05-letter-dex-system-design.md` (design only), `2026-09-05-adr-001-app-delivery-and-file-protocol.md` (proposed; Option A is in effect). Thirteen further uploaded files were byte-identical to files already in the repositories.
 
 **Not available:** the local `C:\Users\itcod\projects\letter-dex` working tree itself. Every uploaded source and test file from it matched `main`, so no uncommitted code was audited.
 
@@ -447,7 +447,7 @@ Not required for the slice (built, leave in place, do not extend): 3D trail, dis
 | Recording device and time | undecided | phone voice memo | phone; Set 1 only now | Before slice testing |
 | Grown-up gate | none | none; long-press; two-tap | two-tap or long-press, no PIN | Before UX |
 | Canonical remote | GitHub lists `letter-brody` only | confirm rename; archive the other | confirm and note in README | Decide Now (five minutes) |
-| Commit the prior analysis documents | gitignored locally | leave; commit to `docs/state/` | commit, so this audit's references resolve | Decide Now |
+| Commit the prior analysis documents | committed to `docs/state/` with this audit | none | done | Decided 5 Sep |
 | Distribution context | private | private; portfolio (Grove); public | private for letter-dex; the Grove is the portfolio artefact | Later |
 | Grove freeze exit | D-008 §4 | unfreeze when AR instruction is required | keep frozen; persistence first if it ever continues | Later |
 
