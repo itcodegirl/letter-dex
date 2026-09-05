@@ -12,6 +12,9 @@ Use the [pilot guide](docs/qa/counting-pilot-guide.md) and
 first responses, supported practice, retries, and access problems. Existing
 runtime mastery and reward rules remain unchanged; pilot validation is pending.
 
+The [5 September project audit](docs/audits/project-audit-2026-09-05.md) covers all
+three repositories and sets the freeze's exit condition.
+
 Complete physical Android observations and retest blocking corrections before
 Jenna reopens new curriculum or world expansion. Laptop testing is supplemental.
 Preserve the selected slices below. AR/PW remains frozen under D-008 unless a
