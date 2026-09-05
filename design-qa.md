@@ -69,9 +69,52 @@ Reduced motion makes the greeting animation effectively static.
 - Normal browser logs were free of errors before the intentional network failure.
 - Unit tests cover encounter uniqueness, step ordering, export/import resume, greeting
   gating, unchanged collection rewards, old saves, repeated species, and request retry.
-- Full suite: 22 tests passed.
+- Full suite: 24 tests passed.
+
+## Follow-up tablet and navigation pass
+
+- P2 resolved: at 600 × 960, the companion covered the journal's name and Hear name
+  control. Portrait journal layouts now place the companion in a horizontal row above
+  the book. The companion ends at y279 and the book starts at y301 on the compact
+  tablet; at 834 × 1194 the book starts at y311. Neither overlaps.
+- P2 resolved: 960 × 600 landscape required scrolling to reach the continuation
+  controls. Compact landscape spacing and a 400px book now keep document height at
+  600px. Hear name remains 127 × 64px. The portrait document remains 960px high.
+- P2 resolved: returning from a loading Pokédex could later pause the active trail.
+  Scene activation now occurs when navigation begins, and obsolete collection loads
+  cannot overwrite a newer view. Regression tests cover deferred and active loads.
+- Browser check: held seven Pokémon requests, switched from Pokédex to Math,
+  restored networking, and completed an addition answer. Math advanced to 1 of 8.
+- Browser check: unanswered sound round has empty reveal text, hidden answer artwork,
+  and a companion line containing no answer letter.
+- Evidence: `docs/qa/discovery-compact-tablet.png`,
+  `docs/qa/discovery-compact-landscape.png`, and refreshed `discovery-journal.png`.
+  The refreshed reference/game comparison was inspected after the layout fixes.
+- Temporary viewport and request interception overrides were removed; browser error
+  log was empty at the end of this pass.
 
 ## Remaining checks
+
+### Compact tablet math playthrough
+
+The next playtest covered the actual learning rounds at 600 × 960 and 960 × 600,
+in addition to the discovery screens. P2 resolved: the 88px berries stacked into tall
+addition groups at 600px width, producing 1033px document height. Compact portrait
+trays now use 70px targets and two-column groups where needed; document height is 960px.
+P2 resolved: landscape math produced 693px document height at 600px viewport height.
+Listen now sits beside the trays in compact landscape, with 64px berry targets and
+tighter vertical spacing; document height is 600px. The 1 + 4 group fits on one row.
+
+Played the remaining Bridge Builders questions, its footprints/greeting/journal,
+all eight Beacon Rescue questions, and its discovery through Explore again. The game
+returned to Berry Crossing at 0 of 8. Also exercised an incorrect addition answer and
+count-along help on an empty space. No forced stop or lost progress occurred. Counting,
+addition, and missing-amount layouts were inspected; browser error log was empty.
+
+Evidence: `docs/qa/math-compact-counting.png`, `math-compact-addition.png`,
+`math-compact-beacon.png`, and `math-compact-landscape.png`. These are responsive
+adaptations of the selected Math Adventure designs; larger tablet/laptop layouts
+are preserved by the scoped breakpoints. Temporary viewport overrides were removed.
 
 Physical Android speech quality, touch comfort, and performance remain unmeasured.
 The celebration uses illustrated scenery and 2D API artwork; the journey retains its
