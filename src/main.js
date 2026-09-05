@@ -63,6 +63,7 @@ let sessionEnded = false
 let atCamp = true
 let trail = null
 let completedMathStage = null
+let navigationVersion = 0
 const progressCount = () => mode === 'math' ? mathJourney(state).correct : state.activeSession.correct
 const lifecycle = new RoundLifecycle()
 const engine = new ChooseEngine(elements.keys)
@@ -108,6 +109,7 @@ function leaveDiscovery() {
 }
 
 function enterDiscovery() {
+  navigationVersion++
   lifecycle.cancel(); globalThis.speechSynthesis?.cancel(); engine.clear()
   atCamp = false
   elements.playView.hidden = true; elements.pokedexView.hidden = true
@@ -263,6 +265,7 @@ function playRound() {
 }
 
 async function selectMode(nextMode) {
+  const version = ++navigationVersion
   leaveDiscovery()
   lifecycle.cancel()
   globalThis.speechSynthesis?.cancel()
@@ -289,20 +292,21 @@ async function selectMode(nextMode) {
   elements.sessionProgress.hidden = collectionMode
   elements.lettersSettings.hidden = nextMode !== 'letters'
   elements.wordsSettings.hidden = nextMode !== 'words'
+  trail?.setActive(!collectionMode)
 
   if (collectionMode) {
     engine.clear()
-    await renderPokedex(elements.pokedexView, state.collection)
+    await renderPokedex(elements.pokedexView, state.collection, () => version === navigationVersion)
   } else {
     if (sessionEnded) startNewSession()
     trail?.setChapter(nextMode === 'math' ? mathJourney(state).stage : 0)
     paintProgress()
     playRound('mode selected')
   }
-  trail?.setActive(!collectionMode)
 }
 
 function showCamp() {
+  navigationVersion++
   leaveDiscovery()
   lifecycle.cancel()
   globalThis.speechSynthesis?.cancel()
