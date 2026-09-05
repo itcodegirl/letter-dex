@@ -2,16 +2,26 @@
 
 ## Math adventure
 
-Choose **Math adventure** at camp, or **Math** in the mode bar. Eight counting challenges
-at Berry Crossing lead to eight picture-addition challenges in Bridge Builders and eight
-missing-amount challenges in Beacon Rescue. Each stage offers a choice to continue or
-return to camp. Tap berries (or empty spaces) once to count along; use Listen to repeat
-the mission. Supported practice is recorded separately from independent math mastery.
+Choose **Math adventure** at camp to choose a set. Each set joins **Berry Delivery
+Crew**, **Bridge Crew**, and **Beacon Partners** into a 24-step adventure, with a
+saved quest, discovery, and optional continuation every eight successes. The
+separate challenge catalogue adds Trail Team, River Rescue, and Beacon Champions;
+without it, the original Trail Team still works. **Choose a set** keeps each
+unfinished place, and **Math** in the mode bar resumes the selected set.
 
-The math route saves separately from reading progress in the existing local backup.
-Correct math answers add Pokémon to the collection using the active letter roster.
-The route uses original berry/tray art and the existing 3D scene; companion artwork is
-still loaded from PokéAPI at runtime. Physical Android audio and performance remain a device check.
+Pikachu and a changing Pokémon friend take part throughout each mission. Tap them
+or **Listen** to repeat the mission. Count the supplies, combine groups to build
+the bridge, and find missing berries to light the beacon. **Count with me** reveals
+empty spaces in missing-amount questions; berry/space taps count aloud. Help and
+successful retries earn adventure progress but use separate practice records.
+The ordinary two-correct adaptive scheduling rule is unchanged; neither its flag
+nor a 24-step adventure establishes durable learning.
+
+Math saves separately from reading in the existing local backup. Correct answers
+add the onscreen friend to the collection. Original berry/tray/wood art and the
+existing 3D scene support the route; Pokémon artwork and names load from PokéAPI
+at runtime. See the [mission checks](docs/qa/math-mission-sets-review.md). Physical
+Android audio and performance and Brody's new challenge-fit check remain pending.
 
 Letter Dex is a private family prototype for kindergarten reading practice. It
 uses Pokémon sound anchors and artwork loaded at runtime from PokéAPI. It is not

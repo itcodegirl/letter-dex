@@ -22,7 +22,9 @@ import { speak, configureSpeech, cancelSpeech, whenSpeechEnds } from './core/spe
 import { createVoiceSettings } from './ui/voice-settings.js'
 import { MathMode } from './modes/math.js'
 import { MATH_STAGES } from '../data/math/adventure.js'
-import { mathJourney, advanceMathJourney } from './core/math-journey.js'
+import { mathJourney, advanceMathJourney, selectMathSet, mathExpeditionProgress } from './core/math-journey.js'
+import { mathSet, mathSets } from './core/math-sets.js'
+import { mathMissionFor } from './ui/math-mission.js'
 import { createDiscovery, pendingDiscovery, discoveries, finishDiscovery } from './core/discoveries.js'
 import { DiscoveryView } from './ui/discovery-view.js'
 import { destinationFor } from './ui/destinations.js'
@@ -57,6 +59,8 @@ const elements = {
   exportButton: byId('exportButton'),
   importInput: byId('importInput'),
   backupStatus: byId('backupStatus'),
+  mathMission: byId('mathMission'),
+  mathHelp: byId('mathHelp'),
 }
 
 let state = loadProgress()
@@ -65,14 +69,28 @@ let sessionEnded = false
 let atCamp = true
 let trail = null
 let completedMathStage = null
+let completedMathSet = null
 let navigationVersion = 0
 const progressCount = () => mode === 'math' ? mathJourney(state).correct : state.activeSession.correct
 const lifecycle = new RoundLifecycle()
 const engine = new ChooseEngine(elements.keys)
+function syncMathScene() {
+  const world = byId('world')
+  const playing = Boolean(elements.appShell.dataset.mathPlaying)
+  if (playing) {
+    world.dataset.mathScene = 'true'
+    world.style.setProperty('--math-scene-height', `${Math.ceil(elements.mathMission.getBoundingClientRect().bottom + 65)}px`)
+  } else {
+    delete world.dataset.mathScene
+    world.style.removeProperty('--math-scene-height')
+  }
+}
+const missionSize = new ResizeObserver(syncMathScene)
+missionSize.observe(elements.mathMission)
 const discoveryView = new DiscoveryView(byId('discoveryView'), {
   save: persist,
   camp: showCamp,
-  destination: entry => destinationFor(entry.mode, entry.mode === 'math' ? mathJourney(state).stage : 0),
+  destination: entry => destinationFor(entry.mode, entry.mode === 'math' ? mathJourney(state).stage : 0, entry.mode === 'math' ? mathSet(mathJourney(state).setId).name : ''),
   buddy: line => { byId('buddyLine').textContent = line; loadCompanion() },
   next: entry => { finishDiscovery(state, entry.id); startNewSession(); selectMode(entry.mode) },
 })
@@ -86,7 +104,7 @@ import('./render/trail.js').then(({ createTrail }) => {
   trail.setChapter(mode === 'math' ? mathJourney(state).stage : 0)
   trail.setActive(!elements.appShell.dataset.discovery && mode !== 'pokedex')
 }).catch(() => sceneStatus(true))
-window.addEventListener('pagehide', () => { trail?.dispose(); lifecycle.cancel() })
+window.addEventListener('pagehide', () => { trail?.dispose(); lifecycle.cancel(); missionSize.disconnect() })
 function loadCompanion() {
   getPokemon('pikachu').then(pokemon => {
     const image = byId('buddyImage')
@@ -112,12 +130,15 @@ function leaveDiscovery() {
 }
 
 function enterDiscovery() {
+  delete elements.appShell.dataset.mathPlaying
+  syncMathScene()
   navigationVersion++
   byId('homeButton').hidden = false
   lifecycle.cancel(); cancelSpeech(); engine.clear()
   atCamp = false
   elements.playView.hidden = true; elements.pokedexView.hidden = true
   byId('campView').hidden = true; byId('grownSettings').hidden = true
+  byId('mathMapView').hidden = true
   byId('questActions').hidden = true; byId('discoveryView').hidden = false
   byId('buddy').hidden = false
   elements.appShell.dataset.discovery = 'true'
@@ -128,7 +149,7 @@ function enterDiscovery() {
 function showDiscovery(entry, replay = false) {
   enterDiscovery()
   elements.sessionProgress.hidden = false
-  paintProgress(SESSION_CAP)
+  paintProgress(SESSION_CAP, entry.checkpoint ?? null, entry.mode)
   discoveryView.show(entry, { replay })
 }
 
@@ -136,10 +157,11 @@ function saveDestination(slug, isNew) {
   const config = mode === 'math' ? MATH_STAGES[completedMathStage] : null
   createDiscovery(state, {
     slug, isNew, mode,
-    title: config?.name ?? (mode === 'words' ? 'Word adventure' : 'Sound adventure'),
+    title: config ? `${mathSet(completedMathSet).name} · ${mathMissionFor(completedMathStage).name}` : (mode === 'words' ? 'Word adventure' : 'Sound adventure'),
     memory: mode === 'math' ? ['We crossed the river!', 'We built the bridge!', 'We lit the beacon!'][completedMathStage] : 'We found the way!',
     nextLabel: config?.next ?? 'Next adventure',
-    nextTitle: mode === 'math' ? MATH_STAGES[(completedMathStage + 1) % 3].name : 'Another trail to explore',
+    nextTitle: mode === 'math' ? `${mathSet(mathJourney(state).setId).name} · ${mathMissionFor(mathJourney(state).stage).name}` : 'Another trail to explore',
+    checkpoint: mode === 'math' ? { setId: completedMathSet, stage: completedMathStage } : undefined,
   })
 }
 
@@ -158,10 +180,20 @@ function handleAttempt(attempt) {
   persist()
 }
 
-function paintProgress(displayCount = progressCount()) {
+function paintProgress(displayCount = progressCount(), savedCheckpoint, displayMode = mode) {
   const bounded = Math.min(displayCount, SESSION_CAP)
   trail?.setProgress(bounded)
   elements.count.textContent = `${bounded} of ${SESSION_CAP}`
+  const mathProgress = byId('mathExpedition')
+  const checkpoint = savedCheckpoint === undefined && bounded === SESSION_CAP && completedMathStage !== null
+    ? { setId: completedMathSet, stage: completedMathStage } : savedCheckpoint
+  mathProgress.hidden = displayMode !== 'math' || (bounded === SESSION_CAP && !checkpoint)
+  elements.sessionProgress.classList.toggle('math-progress', !mathProgress.hidden)
+  if (!mathProgress.hidden) {
+    const steps = checkpoint ? (checkpoint.stage + 1) * SESSION_CAP : mathExpeditionProgress(state)
+    const set = mathSet(checkpoint ? checkpoint.setId : mathJourney(state).setId)
+    mathProgress.textContent = `${steps} of 24 trail steps · ${set.name}`
+  }
   elements.meter.replaceChildren()
   for (let index = 0; index < SESSION_CAP; index += 1) {
     const step = document.createElement('i')
@@ -197,6 +229,7 @@ function showSessionEnd() {
 function startNewSession() {
   sessionEnded = false
   completedMathStage = null
+  completedMathSet = null
   byId('questActions').hidden = true
   if (state.activeSession.correct >= SESSION_CAP) completeSession(state)
   persist()
@@ -213,11 +246,11 @@ function handleCorrect(roundId, { caughtSlug, encounteredSlug } = {}) {
   const isNew = !state.collection[discoverySlug]
   if (caughtSlug) recordCatch(state, caughtSlug)
   if (mode === 'math') {
-    const chapter = mathJourney(state).stage
+    const { stage: chapter, setId } = mathJourney(state)
     const completed = advanceMathJourney(state)
-    paintProgress(completed ? SESSION_CAP : progressCount())
     if (completed) {
       completedMathStage = chapter
+      completedMathSet = setId
       saveDestination(discoverySlug, isNew)
       sessionEnded = true
       afterFeedback(roundId, 1900, showSessionEnd)
@@ -225,6 +258,7 @@ function handleCorrect(roundId, { caughtSlug, encounteredSlug } = {}) {
       byId('buddyLine').textContent = MATH_STAGES[chapter].success
       afterFeedback(roundId, 2600, () => playRound())
     }
+    paintProgress(completed ? SESSION_CAP : progressCount())
     persist()
     return
   }
@@ -280,11 +314,16 @@ async function selectMode(nextMode) {
   atCamp = false
   byId('homeButton').hidden = false
   byId('campView').hidden = true
+  byId('mathMapView').hidden = true
   byId('grownSettings').hidden = true
   byId('questActions').hidden = true
-  byId('buddy').hidden = nextMode === 'pokedex'
+  byId('buddy').hidden = nextMode === 'pokedex' || nextMode === 'math'
+  elements.mathMission.hidden = nextMode !== 'math'
+  byId('mathTools').hidden = nextMode !== 'math'
   byId('grownSettings').open = false
   mode = nextMode
+  if (nextMode === 'math') elements.appShell.dataset.mathPlaying = 'true'
+  else delete elements.appShell.dataset.mathPlaying
   elements.appShell.dataset.activeMode = nextMode
   state.settings.mode = nextMode
   persist()
@@ -315,6 +354,8 @@ async function selectMode(nextMode) {
 }
 
 function showCamp() {
+  delete elements.appShell.dataset.mathPlaying
+  syncMathScene()
   navigationVersion++
   leaveDiscovery()
   lifecycle.cancel()
@@ -327,6 +368,7 @@ function showCamp() {
   byId('questActions').hidden = true
   byId('buddy').hidden = true
   byId('campView').hidden = false
+  byId('mathMapView').hidden = true
   document.querySelector('.modes').hidden = true
   byId('homeButton').hidden = true
   byId('grownSettings').hidden = false
@@ -339,7 +381,54 @@ byId('backToCamp').addEventListener('click', showCamp)
 byId('nextAdventure').addEventListener('click', () => { startNewSession(); selectMode(mode === 'pokedex' ? 'letters' : mode) })
 byId('startTrail').addEventListener('click', () => selectMode('letters'))
 byId('startWords').addEventListener('click', () => selectMode('words'))
-byId('startMath').addEventListener('click', () => selectMode('math'))
+byId('startMath').addEventListener('click', showMathMap)
+byId('mathSetButton').addEventListener('click', showMathMap)
+
+function showMathMap() {
+  delete elements.appShell.dataset.mathPlaying
+  syncMathScene()
+  navigationVersion++
+  leaveDiscovery(); lifecycle.cancel(); cancelSpeech(); engine.clear()
+  atCamp = true
+  byId('homeButton').hidden = false
+  byId('campView').hidden = true
+  byId('grownSettings').hidden = true
+  byId('buddy').hidden = true
+  elements.playView.hidden = true
+  elements.pokedexView.hidden = true
+  elements.sessionProgress.hidden = true
+  byId('mathMapView').hidden = false
+  document.querySelector('.modes').hidden = false
+  trail?.setActive(true)
+  const current = mathJourney(state)
+  const choices = byId('mathSetChoices')
+  choices.replaceChildren()
+  mathSets().forEach((set, index) => {
+    const saved = set.id === current.setId ? current : current.bookmarks[set.id]
+    const progress = saved ? saved.stage * SESSION_CAP + saved.correct : 0
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.className = 'math-set-choice'
+    button.dataset.mathSet = set.id
+    const image = document.createElement('img')
+    image.src = `./assets/destinations/${['crossing', 'bridge', 'beacon'][index % 3]}.png`
+    image.alt = ''
+    const body = document.createElement('span'); body.className = 'math-set-copy'
+    const title = document.createElement('strong'); title.textContent = set.name
+    const detail = document.createElement('span'); detail.textContent = set.description
+    const place = document.createElement('small'); place.textContent = progress ? `Continue · ${progress} of 24 steps` : 'Start adventure · 24 steps'
+    body.append(title, detail, place)
+    const arrow = document.createElement('span'); arrow.className = 'material-symbols-rounded'; arrow.setAttribute('aria-hidden', 'true'); arrow.textContent = 'arrow_forward'
+    button.append(image, body, arrow)
+    button.addEventListener('click', () => {
+      selectMathSet(state, set.id)
+      if (sessionEnded) startNewSession()
+      persist(); selectMode('math')
+    })
+    choices.append(button)
+  })
+  choices.querySelector('button')?.focus({ preventScroll: true })
+}
 byId('resumeDiscovery').addEventListener('click', () => { const entry = pendingDiscovery(state); if (entry) showDiscovery(entry) })
 byId('openJournal').addEventListener('click', () => {
   enterDiscovery(); elements.sessionProgress.hidden = true

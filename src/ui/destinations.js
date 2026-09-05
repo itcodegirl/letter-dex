@@ -1,4 +1,5 @@
 import { MATH_STAGES } from '../../data/math/adventure.js'
+import { mathMissionFor } from './math-mission.js'
 
 const routes = [
   { image: 'crossing', invitation: 'Look at those stepping stones! Count the berries with me to open a way across the stream.', action: 'Explore the crossing' },
@@ -7,8 +8,8 @@ const routes = [
 ]
 
 // Use the live journey stage, including when an older memory is reopened.
-export function destinationFor(mode, stage = 0) {
-  if (mode === 'math') return { ...routes[stage], title: MATH_STAGES[stage].name }
+export function destinationFor(mode, stage = 0, setName = '') {
+  if (mode === 'math') return { ...routes[stage], title: setName ? `${setName} · ${mathMissionFor(stage).name}` : MATH_STAGES[stage].name }
   return {
     image: 'crossing',
     title: mode === 'words' ? 'Word trail' : 'Sound trail',

@@ -23,6 +23,32 @@ are merged; verify their combined behavior. All further merges remain Jenna's.
 
 ## Living Trail implementation slice (selected 5 Sep 2026)
 
+### Longer math missions and challenge sets (selected 5 Sep 2026)
+
+After the laptop pilot found instant answers, easy repetition, and too little
+Pokémon involvement, Jenna selected Bridge Crew, Beacon Partners, and Berry
+Delivery Crew for different parts of the challenges and requested longer
+challenges and more sets. This narrowly reopens the existing counting, picture
+addition, and missing-amount activities through totals of 10. AR/PW, new worlds,
+new engines, and later grades remain frozen; Android and learning validation
+remain incomplete.
+
+Each set joins three eight-success missions into a 24-step adventure. Every
+eight successes still saves a quest and offers the existing Pokémon discovery,
+journal, optional continuation, and camp. Three sets supply nine missions; this
+is neither a required sitting length nor a mastery claim. Set selection keeps
+each unfinished place, and shared facts retain their existing practice history.
+
+Large runtime PokéAPI companions participate throughout the mission. Missing
+amounts initially show the present berries and target; Count with me reveals
+spaces as optional support. Help and successful retries earn adventure progress
+but use separate math-help practice records. This corrects the pilot's retry
+classification gap for future responses; it does not rewrite old records or
+detect adult cues. The adaptive selector and its two-correct threshold stay intact.
+
+Runtime/presentation and the additional curriculum sets are separate PRs. Both
+must be checked together before another adult-led challenge-fit pilot.
+
 ### Destination celebration (selected 5 Sep 2026)
 
 Jenna selected all three celebration designs as one flow: follow three footprints,

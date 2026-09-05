@@ -1,6 +1,7 @@
 import { LETTER_SETS } from '../../data/reading/letter-sets.js'
 import { WORD_SETS } from '../../data/reading/word-sets.js'
-import { MATH_STAGES, mathItems } from '../../data/math/adventure.js'
+import { MATH_STAGES } from '../../data/math/adventure.js'
+import { mathSets, mathSetItems } from '../core/math-sets.js'
 
 function accuracy(item) {
   return item.seen ? Math.round((item.correct / item.seen) * 100) : 0
@@ -19,7 +20,10 @@ export function renderParentView(root, state) {
   const recentCorrect = recentSessions.reduce((sum, session) => sum + session.correct, 0)
 
   const setRows = [
-    ...MATH_STAGES.map((stage, index) => ({ label: `Math · ${stage.name}`, percentage: masteryFor(mathItems(index).map(item => item.id), state) })),
+    ...mathSets().flatMap(set => MATH_STAGES.map((stage, index) => ({
+      label: `Math · ${set.name} · ${stage.skill}`,
+      percentage: masteryFor(mathSetItems(index, set.id).map(item => item.id), state),
+    }))),
     ...LETTER_SETS.map((set) => ({
       label: `Letters · ${set.label}`,
       percentage: masteryFor(set.letters.map((letter) => `letter-sound:${letter}`), state),
