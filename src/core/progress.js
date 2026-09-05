@@ -57,7 +57,7 @@ export function getItemProgress(state, id, kind = 'unknown') {
 
 export function recordAttempt(state, { id, kind, correct, now = new Date() }) {
   const previous = getItemProgress(state, id, kind)
-  const streak = correct ? previous.streak + 1 : 0
+  const streak = correct && kind !== 'math-help' ? previous.streak + 1 : 0
   state.items[id] = {
     ...previous,
     kind,
@@ -65,7 +65,7 @@ export function recordAttempt(state, { id, kind, correct, now = new Date() }) {
     correct: previous.correct + (correct ? 1 : 0),
     streak,
     lastSeen: now.toISOString(),
-    mastered: streak >= 2 || previous.mastered,
+    mastered: kind !== 'math-help' && (streak >= 2 || previous.mastered),
   }
   return state.items[id]
 }
