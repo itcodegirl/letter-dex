@@ -11,8 +11,30 @@ PokéAPI.
 npm start
 ```
 
-Open `http://127.0.0.1:4173`. The project has no runtime dependencies, framework,
-bundler, or TypeScript build step.
+Open `http://127.0.0.1:4173`. Three.js 0.180.0 is included locally with its MIT
+license under `assets/vendor/`; no install or build step is needed. The app uses
+vanilla JavaScript modules and requires an HTTP(S) server, not `file://`.
+
+## Living Trail
+
+Choose Sound adventure or Word adventure at camp. Listen to the clue and tap an
+answer stone. Correct answers raise the route and move the camera toward the
+clearing; a Pikachu companion offers encouragement. Pokémon artwork is fetched
+at runtime. No Pokémon art is bundled.
+
+Eight correct answers save one quest and award a badge. Choose Next adventure,
+My Pokémon, or Back to camp. Leaving camp or changing modes preserves earned
+progress. Learning items and collection/session rewards remain separate fields
+in the existing save format. Saves are per browser and origin; use the grown-up
+export/import controls to transfer them to a different device or host.
+
+The renderer targets 30 frames per second with capped pixel density. Reduced
+motion uses static camera/stone changes. If WebGL is unavailable, practice runs
+over the existing camp artwork. If PokéAPI fails, questions remain playable.
+This is not an offline-installable app or native Android package. Test audio and
+performance on the actual tablet before relying on it for independent play.
+
+Math remains a later curriculum phase; this slice uses the existing reading modes.
 
 ## Test
 

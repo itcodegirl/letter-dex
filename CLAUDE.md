@@ -32,8 +32,9 @@ tiebreaker on any conflict. Read PLAN.md for scope and build order.
    sight words, not phonetic near-misses.
 8. **Decodable-word distractors are minimal pairs** — same length, most letters shared in
    position — so he has to decode, not guess by shape.
-9. **Sessions end at 8 correct.** A badge, then done. Do not add "keep going," streak pressure,
-   timers he can see, or anything that makes stopping feel like losing.
+9. **Quests save at 8 correct.** Award a badge and offer Next adventure, My Pokémon, and Back to camp.
+   Optional continuation replaces the former forced stop, per Jenna's Living Trail direction.
+   No streak pressure, visible timers, or penalties for stopping.
 10. **Selection is adaptive.** Weighted toward low-streak items; two correct in a row marks an item
     mastered and drops its weight; ~20% of every session is mastered items for retention.
 11. **The unit is the grapheme, not the letter.** Words are arrays of graphemes (`['sh','i','p']`),
@@ -53,8 +54,10 @@ tiebreaker on any conflict. Read PLAN.md for scope and build order.
 ## Tech constraints
 
 - Vanilla JS, ES modules, no framework, no bundler, no TypeScript. JSDoc types are welcome.
-- Runtime dependencies: none. Dev dependencies: `node:test` only, unless a phase document adds one.
-- Static site. Deploys as-is to Vercel. `index.html` at the root must work from `file://`.
+- Runtime dependencies: locally vendored Three.js 0.180.0 for the selected Living Trail 3D view.
+  Its MIT license is in assets/vendor. Tests use the built-in `node:test` runner.
+- Static site, no build step. Run with `npm start` or a private HTTP(S) static host.
+  ES modules require a server; `file://` is unsupported. Offline installation is future work.
 - PokéAPI: one fetch per resource per session, cached in a `Map`; preload the next round's sprite.
   Sprite path is `sprites.other['official-artwork'].front_default`. PokéAPI asks for caching
   rather than enforcing a rate limit — behave as if the limit exists.

@@ -14,7 +14,7 @@ function sharedPositions(a, b) {
 }
 
 export class WordsMode {
-  constructor({ state, elements, engine, getProgress, onAttempt, onCorrect, settings, activeLetters }) {
+  constructor({ state, elements, engine, getProgress, onAttempt, onCorrect, settings, activeLetters, isCurrentRound }) {
     this.state = state
     this.elements = elements
     this.engine = engine
@@ -23,6 +23,7 @@ export class WordsMode {
     this.onCorrect = onCorrect
     this.settings = settings
     this.activeLetters = activeLetters
+    this.isCurrentRound = isCurrentRound
   }
 
   items() {
@@ -69,41 +70,54 @@ export class WordsMode {
       Listen`
     this.elements.stage.className = 'stage'
     this.elements.stage.replaceChildren(listen)
+    listen.focus({ preventScroll: true })
+    let rendered = false
+    let answered = false
 
     listen.addEventListener('click', () => {
+      if (!this.isCurrentRound() || answered) return
       speak(answer.word, { rate: 0.85 })
       this.elements.prompt.textContent = 'Which one is it?'
+      if (rendered) return
+      rendered = true
       this.engine.render({
         options: shuffled([answer, ...this.distractors(answer, items)]),
         answerId: answer.id,
         className: 'word',
         labelFor: (option) => `Word ${option.word}`,
         onWrong: (option) => {
+          if (!this.isCurrentRound()) return
           this.onAttempt({ id: answer.id, kind: 'word', correct: false })
+          this.elements.prompt.textContent = `That says ${option.word}. Try another stone.`
           speak(`That says ${option.word}. Try again.`)
         },
         onCorrect: async () => {
+          if (!this.isCurrentRound() || answered) return
+          answered = true
           this.onAttempt({ id: answer.id, kind: 'word', correct: true })
           this.elements.prompt.textContent = 'You read it.'
           this.elements.reveal.innerHTML = `
             <div class="word">${answer.graphemes.map((part) => `<span>${part}</span>`).join('')}</div>`
           this.elements.reveal.querySelectorAll('span').forEach((span, index) => {
-            window.setTimeout(() => span.classList.add('lit'), 350 * index)
+            window.setTimeout(() => { if (this.isCurrentRound()) span.classList.add('lit') }, 350 * index)
           })
           speakWord(answer.graphemes, GRAPHEMES)
 
           const letters = this.activeLetters()
           const letter = letters[Math.floor(Math.random() * letters.length)]
           const slug = ROSTER[letter].slug
+          this.onCorrect({ caughtSlug: slug })
           try {
             const pokemon = await getPokemon(slug)
-            this.elements.stage.innerHTML = `<img src="${pokemon.artwork}" alt="${pokemon.name} caught">`
+            if (!this.isCurrentRound()) return
+            this.elements.stage.innerHTML = `<img class="encounter-pokemon" src="${pokemon.artwork}" alt="${pokemon.name} caught">`
+            this.elements.stage.querySelector('img').onerror = () => { if (this.isCurrentRound()) this.elements.stage.textContent = 'Caught!' }
           } catch {
+            if (!this.isCurrentRound()) return
             this.elements.stage.textContent = 'Caught!'
           }
-          this.onCorrect({ caughtSlug: slug })
         },
       })
-    }, { once: true })
+    })
   }
 }

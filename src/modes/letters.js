@@ -37,22 +37,24 @@ export class LettersMode {
     }))
     const answer = chooseAdaptive(items, this.getProgress)
     this.answer = answer
-    this.elements.prompt.textContent = 'A new sound is waiting…'
+    this.elements.prompt.textContent = 'Listen to find the next stone.'
     this.elements.reveal.replaceChildren()
-    this.elements.stage.className = 'stage thinking'
-    this.elements.stage.setAttribute('aria-busy', 'true')
-    this.elements.stage.textContent = 'Preparing camp…'
+    this.elements.stage.className = 'stage'
+    this.elements.stage.setAttribute('aria-busy', 'false')
     this.engine.clear()
 
-    let pokemon
-    try {
-      pokemon = await getPokemon(ROSTER[answer.letter].slug)
-    } catch {
-      this.elements.prompt.textContent = 'Could not reach PokéAPI.'
-      this.elements.stage.textContent = 'Check the connection, then tap Letters to retry.'
-      this.elements.stage.setAttribute('aria-busy', 'false')
-      return
-    }
+    let pokemon = null
+    let answered = false
+    getPokemon(ROSTER[answer.letter].slug).then(result => {
+      if (!this.isCurrentRound()) return
+      pokemon = result
+      const image = this.elements.stage.querySelector('.encounter-pokemon')
+      if (image && pokemon.artwork) {
+        image.src = pokemon.artwork
+        image.hidden = false
+        if (answered) { image.classList.remove('is-mystery'); image.alt = `${pokemon.name} discovered` }
+      }
+    }).catch(() => {})
 
     if (!this.isCurrentRound()) return
 
@@ -60,13 +62,13 @@ export class LettersMode {
     this.elements.stage.setAttribute('aria-busy', 'false')
     this.elements.stage.innerHTML = `
       <div class="encounter">
-        <img class="encounter-pokemon is-mystery" src="${pokemon.artwork}" alt="Mystery Pokémon">
+        <img class="encounter-pokemon is-mystery" hidden alt="Mystery Pokémon">
         <button class="listen" type="button" aria-label="Listen to the letter sound">
           <span class="material-symbols-rounded" aria-hidden="true">volume_up</span>
           <span>Listen</span>
         </button>
       </div>`
-    this.elements.prompt.textContent = 'Listen to the sound.'
+    this.elements.stage.querySelector('img').onerror = event => { event.target.hidden = true }
 
     const clash = { C: 'K', K: 'C' }[answer.letter]
     const distractors = chooseDistinct(
@@ -82,22 +84,26 @@ export class LettersMode {
         answerId: answer.id,
         labelFor: (option) => `Letter ${option.letter}`,
         onWrong: (option) => {
+          if (!this.isCurrentRound()) return
           this.onAttempt({ id: answer.id, kind: 'letter-sound', correct: false })
           this.elements.prompt.textContent = 'Listen, then try again.'
-          speak(`That one is ${option.letter}. Try again.`)
+          this.elements.reveal.textContent = 'Try another stone. Tap Listen to hear the clue again.'
+          speak(`That one says ${ROSTER[option.letter].sound}. Listen, then try again.`)
         },
         onCorrect: () => {
+          if (!this.isCurrentRound()) return
+          answered = true
           this.onAttempt({ id: answer.id, kind: 'letter-sound', correct: true })
-          const name = pokemon.name[0].toUpperCase() + pokemon.name.slice(1)
+          const name = pokemon?.name
           const image = this.elements.stage.querySelector('.encounter-pokemon')
           image.classList.remove('is-mystery')
-          image.alt = `${name} discovered`
+          image.alt = name ? `${name} discovered` : 'Discovery artwork'
           this.elements.stage.classList.add('discovered')
-          this.elements.prompt.textContent = `You found ${name}!`
+          this.elements.prompt.textContent = name ? `You found ${name}!` : 'You raised a stone!'
           this.elements.reveal.innerHTML = `
             <div class="letter">${this.display(answer.letter)}</div>
-            <div class="name"><b>${answer.letter}</b>${name.slice(1)}</div>`
-          speak(`${ROSTER[answer.letter].sound}. ${name}. Letter ${answer.letter}.`)
+            <div class="name">${name ?? 'A new path opens.'}</div>`
+          speak(`${ROSTER[answer.letter].sound}. ${name ? `${name}. ` : ''}Letter ${answer.letter}.`)
           this.onCorrect()
         },
       })
@@ -105,7 +111,9 @@ export class LettersMode {
 
     renderChoices()
     const listen = this.elements.stage.querySelector('.listen')
+    listen.focus({ preventScroll: true })
     listen.addEventListener('click', () => {
+      if (!this.isCurrentRound() || answered) return
       speak(ROSTER[answer.letter].sound, { rate: 0.72 })
       this.elements.prompt.textContent = 'Which letter matches?'
     })

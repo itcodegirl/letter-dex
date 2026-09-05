@@ -12,15 +12,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;1000&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24..48,600,1,0" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./trail.css">
   </head>
   <body>
+    <div id="world" aria-hidden="true"></div>
     <main class="dex" id="appShell" data-active-mode="letters">
       <header class="lid">
         <div class="camp-mark" aria-label="Letter Dex">
           <span class="material-symbols-rounded" aria-hidden="true">explore</span>
-          <strong>Letter Dex</strong>
+          <strong>Letter Dex <small>LIVING TRAIL</small></strong>
         </div>
         <div class="badges" id="badges" aria-label="Badges earned"></div>
+        <button id="homeButton" class="home-button" aria-label="Back to camp">Camp</button>
       </header>
 
       <nav class="modes" aria-label="Choose a mode">
@@ -29,6 +32,17 @@
         <button data-mode="pokedex" aria-pressed="false"><span class="material-symbols-rounded" aria-hidden="true">menu_book</span>Pokédex</button>
       </nav>
 
+      <section id="campView" class="camp-view" aria-label="Adventure camp">
+        <p class="eyebrow">BRODY’S ADVENTURE</p>
+        <h1>Wonder awaits.<br>Find your way.</h1>
+        <p class="camp-copy">A mystery is waiting across the stream.</p>
+        <button id="campListen" class="camp-audio" aria-label="Hear your mission">Hear the mission</button>
+        <div class="camp-actions">
+          <button id="startTrail"><span>Listen & explore</span><strong>Sound adventure</strong></button>
+          <button id="startWords"><span>Read & discover</span><strong>Word adventure</strong></button>
+        </div>
+      </section>
+
       <section id="playView">
         <div class="screen">
           <p class="prompt" id="prompt">Loading…</p>
@@ -36,7 +50,17 @@
           <div class="reveal" id="reveal" aria-live="polite"></div>
         </div>
         <div class="keys" id="keys"></div>
+        <div id="questActions" class="quest-actions" hidden>
+          <button id="nextAdventure">Next adventure</button>
+          <button data-mode="pokedex">My Pokémon</button>
+          <button id="backToCamp">Back to camp</button>
+        </div>
       </section>
+
+      <aside id="buddy" class="buddy" aria-label="Your companion" hidden>
+        <img id="buddyImage" alt="" hidden>
+        <p id="buddyLine">Let’s find the way.</p>
+      </aside>
 
       <section id="pokedexView" class="collection-screen" aria-label="Caught Pokémon" hidden></section>
 
@@ -89,6 +113,8 @@
           </section>
         </div>
       </details>
+      <p id="saveStatus" class="system-status" role="status"></p>
+      <p id="sceneStatus" class="system-status"></p>
     </main>
 
     <script type="module" src="./src/main.js"></script>
