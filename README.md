@@ -34,6 +34,8 @@ vanilla JavaScript modules and requires an HTTP(S) server, not `file://`.
 
 Every eight-answer quest leads to one combined celebration: follow three footprints,
 say hello to the encountered Pokémon, then add the destination to the adventure journal.
+The encounter stays concealed until the third footprint; companion clues build toward
+the reveal while the artwork loads in the background.
 The journal offers the next route or a return to camp. Camp also opens past memories
 and resumes an unfinished discovery after a refresh. Repeated greetings and journal
 visits do not award extra catches or badges.

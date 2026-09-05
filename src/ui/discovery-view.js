@@ -1,4 +1,4 @@
-import { getPokemon } from '../core/pokeapi.js'
+import { getPokemon, preloadArtwork } from '../core/pokeapi.js'
 import { speak } from '../core/speech.js'
 import { followFootprint, openDiscoveryJournal } from '../core/discoveries.js'
 
@@ -34,7 +34,7 @@ export class DiscoveryView {
       const title = document.createElement('h2'); title.textContent = entry.memory
       right.innerHTML = `<img class="route-memory" src="./assets/discovery/clearing.png" alt="The forest clearing we reached"><p class="journey-stamp">${icon('verified')} Adventure remembered</p>`
       right.prepend(title); display.append(left, right)
-    } else display.append(portrait)
+    } else if (step !== 'footprints') display.append(portrait)
     this.root.append(display)
     if (step === 'meet') this.root.append(name)
     const status = document.createElement('p'); status.className = 'discovery-status'; status.setAttribute('role', 'status')
@@ -47,10 +47,10 @@ export class DiscoveryView {
         const pokemon = await getPokemon(entry.slug)
         if (!current()) return
         pokemonName = pokemon.name
-        if (step !== 'footprints') name.textContent = pokemon.name
+        name.textContent = pokemon.name
         portrait.onload = () => { if (current()) { portrait.hidden = false; status.textContent = ''; loading = false } }
         portrait.onerror = () => { if (current()) { portrait.hidden = true; loading = false; status.textContent = 'Your friend is saved. The picture is taking a little longer.'; retry.hidden = false } }
-        portrait.alt = step === 'footprints' ? 'A friend waiting in the clearing' : pokemon.name
+        portrait.alt = pokemon.name
         if (!pokemon.artwork) throw new Error('No artwork')
         portrait.src = pokemon.artwork
       } catch {
@@ -77,7 +77,11 @@ export class DiscoveryView {
       this.root.append(prints)
       const clue = document.createElement('button'); clue.innerHTML = `${icon('volume_up')} Hear clue`; clue.className = 'discovery-secondary'
       clue.addEventListener('click', () => speak(`Follow the footprints. Tap footprint ${entry.footprints + 1} to find our friend.`)); controls.append(clue)
-      this.buddy('Look! Someone is waiting for us.')
+      this.buddy([
+        'Look! Footprints lead into the clearing.',
+        'We’re getting closer. Follow the next footprint.',
+        'One more footprint. Who could it be?',
+      ][entry.footprints])
     } else if (step === 'meet') {
       const hello = document.createElement('button'); hello.className = 'discovery-primary'; hello.innerHTML = `Say hello ${icon('volume_up')}`
       hello.addEventListener('click', () => {
@@ -99,7 +103,10 @@ export class DiscoveryView {
     const camp = document.createElement('button'); camp.className = 'discovery-secondary'; camp.textContent = 'Back to camp'; camp.addEventListener('click', this.camp)
     controls.append(camp); this.root.append(status, retry, controls)
     const focus = this.root.querySelector('.footprint:not(:disabled), .discovery-primary')
-    focus?.focus({ preventScroll: true }); load()
+    focus?.focus({ preventScroll: true })
+    // Warm the artwork without putting the surprise in the visible or accessible UI.
+    if (step === 'footprints') getPokemon(entry.slug).then(preloadArtwork).catch(() => {})
+    else load()
   }
 
   history(entries, onSelect) {
