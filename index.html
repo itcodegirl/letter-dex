@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="./trail.css">
     <link rel="stylesheet" href="./math.css">
     <link rel="stylesheet" href="./discovery.css">
+    <link rel="stylesheet" href="./camp.css">
   </head>
   <body>
     <div id="world" aria-hidden="true"></div>
@@ -25,10 +26,10 @@
           <strong>Letter Dex <small>LIVING TRAIL</small></strong>
         </div>
         <div class="badges" id="badges" aria-label="Badges earned"></div>
-        <button id="homeButton" class="home-button" aria-label="Back to camp">Camp</button>
+        <button id="homeButton" class="home-button" aria-label="Back to camp" hidden>Camp</button>
       </header>
 
-      <nav class="modes" aria-label="Choose a mode">
+      <nav class="modes" aria-label="Choose a mode" hidden>
         <button data-mode="letters" class="on" aria-pressed="true"><span class="material-symbols-rounded" aria-hidden="true">hearing</span>Letters</button>
         <button data-mode="words" aria-pressed="false"><span class="material-symbols-rounded" aria-hidden="true">spellcheck</span>Words</button>
         <button data-mode="math" aria-pressed="false">Math</button>
@@ -37,17 +38,18 @@
 
       <section id="campView" class="camp-view" aria-label="Adventure camp">
         <p class="eyebrow">BRODY’S ADVENTURE</p>
-        <h1>Wonder awaits.<br>Find your way.</h1>
+        <h1>Wonder awaits.<br> Find your way.</h1>
         <p class="camp-copy">A mystery is waiting across the stream.</p>
         <button id="campListen" class="camp-audio" aria-label="Hear your mission">Hear the mission</button>
         <div class="camp-actions">
-          <button id="startTrail"><span>Listen & explore</span><strong>Sound adventure</strong></button>
-          <button id="startWords"><span>Read & discover</span><strong>Word adventure</strong></button>
-          <button id="startMath"><span>Count · Build · Light the way</span><strong>Math adventure</strong></button>
+          <button id="startTrail"><span class="material-symbols-rounded camp-choice-icon" aria-hidden="true">hearing</span><span>Listen & explore</span><strong>Sound adventure</strong></button>
+          <button id="startWords"><span class="material-symbols-rounded camp-choice-icon" aria-hidden="true">menu_book</span><span>Read & discover</span><strong>Word adventure</strong></button>
+          <button id="startMath"><img class="camp-choice-image" src="./assets/math/berry.png" alt=""><span>Count · Build · Light the way</span><strong>Math adventure</strong></button>
         </div>
         <div class="camp-memories">
           <button id="resumeDiscovery" hidden>Meet your saved friend</button>
           <button id="openJournal">Adventure journal</button>
+          <button id="campPokedex" data-mode="pokedex">My Pokémon</button>
         </div>
       </section>
 

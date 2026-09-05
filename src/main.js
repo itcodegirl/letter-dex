@@ -110,6 +110,7 @@ function leaveDiscovery() {
 
 function enterDiscovery() {
   navigationVersion++
+  byId('homeButton').hidden = false
   lifecycle.cancel(); globalThis.speechSynthesis?.cancel(); engine.clear()
   atCamp = false
   elements.playView.hidden = true; elements.pokedexView.hidden = true
@@ -270,6 +271,7 @@ async function selectMode(nextMode) {
   lifecycle.cancel()
   globalThis.speechSynthesis?.cancel()
   atCamp = false
+  byId('homeButton').hidden = false
   byId('campView').hidden = true
   byId('grownSettings').hidden = true
   byId('questActions').hidden = true
@@ -318,6 +320,8 @@ function showCamp() {
   byId('questActions').hidden = true
   byId('buddy').hidden = true
   byId('campView').hidden = false
+  document.querySelector('.modes').hidden = true
+  byId('homeButton').hidden = true
   byId('grownSettings').hidden = false
   byId('resumeDiscovery').hidden = !pendingDiscovery(state)
   trail?.setActive(true)
@@ -334,7 +338,7 @@ byId('openJournal').addEventListener('click', () => {
   enterDiscovery(); elements.sessionProgress.hidden = true
   discoveryView.history(discoveries(state), entry => showDiscovery(entry, entry.step === 'journal'))
 })
-byId('campListen').addEventListener('click', () => speak('Brody, a mystery is waiting across the stream. Choose a sound, word, or math adventure. Count berries, build a bridge, and rescue the beacon!'))
+byId('campListen').addEventListener('click', () => speak('Brody, a mystery is waiting across the stream. Choose the ear for a sound adventure, the book for a word adventure, or the berry for a math adventure. Let’s explore!'))
 
 function activateButtonGroup(root, attribute, value) {
   root.querySelectorAll('button').forEach((button) => {

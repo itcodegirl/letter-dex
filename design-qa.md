@@ -145,4 +145,31 @@ encounter; verified the creature image and name after footprint three; greeted a
 opened the journal. Browser error log was empty. The main game's quest progress was
 not used for this playtest. Full suite: 24 tests passed.
 
+## Camp choice follow-up
+
+P2 resolved: camp duplicated the adventure decision in top tabs and large buttons.
+Camp now uses its three large buttons as the only mode chooser. Existing Material
+Symbols (ear and book) and the original berry asset provide visual cues. Hear the
+mission explains those cues. A My Pokémon button preserves direct collection access;
+the mode bar and Camp button return during play, collection, and discovery as appropriate.
+
+Before/after evidence: `docs/qa/camp-before-choices.png` and `camp-clear-choices.png`,
+both 834 × 1194 captures at the corresponding CSS viewport. They were inspected
+together in the local `outputs/product-design/camp-choices-comparison.png` outside
+this repository, proportionally resized without stretching. The before view has no
+focus outline; the after view shows keyboard focus on Sound adventure. The scenery,
+Nunito typography, rounded buttons, and green/gold palette are retained. Changes are
+limited to choice hierarchy, visual cues, and responsive spacing.
+
+Compact tablet checks: 600 × 960 document height is 960px; adventure buttons measure
+143px tall. An initial 960 × 600 landscape view overflowed to 697px; tighter spacing,
+a single-line heading, and three columns now fit within 600px. Evidence is in
+`docs/qa/camp-compact-choices.png` and `camp-landscape-choices.png`.
+
+Browser verification: entered sounds with Enter; opened words and math from camp;
+verified the in-game mode bar; opened My Pokémon, the journal, and grown-up settings;
+returned to camp from each. Math remained at Bridge Builders, 0 of 8. Mission replay
+was activated; physical-device speech quality and comprehension were not measured.
+Browser error log was empty. The full 24-test suite passes. Viewport override reset.
+
 final result: passed
