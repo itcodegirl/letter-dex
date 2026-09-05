@@ -5,8 +5,8 @@ import { followFootprint, openDiscoveryJournal } from '../core/discoveries.js'
 const icon = name => `<span class="material-symbols-rounded" aria-hidden="true">${name}</span>`
 
 export class DiscoveryView {
-  constructor(root, { save, camp, next, buddy }) {
-    Object.assign(this, { root, save, camp, next, buddy })
+  constructor(root, { save, camp, next, buddy, destination }) {
+    Object.assign(this, { root, save, camp, next, buddy, destination })
     this.version = 0
   }
   cancel() { this.version++; this.root.replaceChildren() }
@@ -15,6 +15,7 @@ export class DiscoveryView {
     const version = ++this.version
     const current = () => version === this.version
     const step = replay ? 'journal' : entry.step
+    const destination = step === 'journal' ? this.destination(entry) : null
     this.root.dataset.step = step
     this.root.replaceChildren()
     const top = document.createElement('p'); top.className = 'discovery-chapter'; top.textContent = `${entry.title} complete`; this.root.append(top)
@@ -32,8 +33,18 @@ export class DiscoveryView {
       const left = document.createElement('div'); left.className = 'journal-page journal-left'; left.append(portrait, name, hear)
       const right = document.createElement('div'); right.className = 'journal-page journal-right'
       const title = document.createElement('h2'); title.textContent = entry.memory
-      right.innerHTML = `<img class="route-memory" src="./assets/discovery/clearing.png" alt="The forest clearing we reached"><p class="journey-stamp">${icon('verified')} Adventure remembered</p>`
-      right.prepend(title); display.append(left, right)
+      const stamp = document.createElement('p'); stamp.className = 'journey-stamp'; stamp.innerHTML = `${icon('verified')} Adventure remembered`
+      const preview = document.createElement('button'); preview.className = 'destination-preview'
+      preview.setAttribute('aria-label', `Hear next adventure: ${destination.title}`)
+      const scene = document.createElement('img'); scene.src = `./assets/destinations/${destination.image}.png`; scene.alt = ''
+      const label = document.createElement('span'); label.className = 'destination-label'; label.innerHTML = icon('volume_up')
+      const caption = document.createElement('span'); caption.textContent = `Next: ${destination.title}`; label.append(caption)
+      preview.append(scene, label)
+      preview.addEventListener('click', () => {
+        if (!current()) return
+        this.buddy(destination.invitation); speak(destination.invitation)
+      })
+      right.append(title, stamp, preview); display.append(left, right)
     } else if (step !== 'footprints') display.append(portrait)
     this.root.append(display)
     if (step === 'meet') this.root.append(name)
@@ -95,9 +106,9 @@ export class DiscoveryView {
       controls.append(hello, journal)
       this.buddy('We found the way together!')
     } else {
-      const next = document.createElement('button'); next.className = 'discovery-primary'; next.textContent = replay ? 'Continue adventure' : entry.nextLabel
+      const next = document.createElement('button'); next.className = 'discovery-primary'; next.textContent = destination.action
       next.addEventListener('click', () => { if (current()) this.next(entry) }); controls.append(next)
-      const teaser = document.createElement('p'); teaser.className = 'discovery-teaser'; teaser.textContent = replay ? 'Another adventure is waiting.' : `Next: ${entry.nextTitle}`
+      const teaser = document.createElement('p'); teaser.className = 'discovery-teaser'; teaser.textContent = 'Tap the picture to hear what’s next.'
       this.root.append(teaser); this.buddy('A memory to keep. Where shall we go next?')
     }
     const camp = document.createElement('button'); camp.className = 'discovery-secondary'; camp.textContent = 'Back to camp'; camp.addEventListener('click', this.camp)

@@ -24,6 +24,7 @@ import { MATH_STAGES } from '../data/math/adventure.js'
 import { mathJourney, advanceMathJourney } from './core/math-journey.js'
 import { createDiscovery, pendingDiscovery, discoveries, finishDiscovery } from './core/discoveries.js'
 import { DiscoveryView } from './ui/discovery-view.js'
+import { destinationFor } from './ui/destinations.js'
 
 const SESSION_CAP = 8
 
@@ -70,6 +71,7 @@ const engine = new ChooseEngine(elements.keys)
 const discoveryView = new DiscoveryView(byId('discoveryView'), {
   save: persist,
   camp: showCamp,
+  destination: entry => destinationFor(entry.mode, entry.mode === 'math' ? mathJourney(state).stage : 0),
   buddy: line => { byId('buddyLine').textContent = line; loadCompanion() },
   next: entry => { finishDiscovery(state, entry.id); startNewSession(); selectMode(entry.mode) },
 })

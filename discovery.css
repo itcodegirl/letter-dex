@@ -36,7 +36,10 @@
 .journal-page .discovery-name { color:#234032; background:none; padding:0; margin:0; font-size:clamp(1.15rem,3.4vw,2rem); }
 .discovery-hear { display:flex; align-items:center; justify-content:center; gap:5px; color:#263c2e; background:#edcc80; padding:8px 12px; font-size:.85rem; }
 .journal-right h2 { font-size:clamp(1.1rem,3vw,1.6rem); line-height:1.15; margin:0; }
-.route-memory { width:70%; max-height:50%; object-fit:cover; border-radius:10px; }
+.destination-preview { display:flex; flex-direction:column; width:100%; min-height:64px; min-width:64px; margin-top:10px; padding:0; overflow:hidden; border:2px solid #ad803f; border-radius:12px; background:#edcc80; color:#263c2e; cursor:pointer; flex-shrink:0; }
+.destination-preview img { width:100%; aspect-ratio:1.5; max-height:150px; object-fit:cover; }
+.destination-label { display:flex; align-items:center; justify-content:center; gap:5px; padding:6px; font-size:.85rem; line-height:1.15; font-weight:900; }
+.destination-preview:focus-visible { outline:4px solid #173d32; outline-offset:3px; }
 .journey-stamp { font-size:.8rem; font-weight:800; margin:0; }
 .journey-stamp .material-symbols-rounded { vertical-align:middle; }
 .journal-list { display:flex; flex-direction:column; gap:14px; max-width:620px; width:100%; margin:30px 0; }
@@ -58,6 +61,9 @@
   .journal-page .discovery-name { font-size:1.3rem; }
   .journal-right h2 { font-size:1.15rem; }
   .journey-stamp { font-size:.65rem; }
+  .destination-preview { margin-top:3px; }
+  .destination-preview img { max-height:80px; }
+  .destination-label { font-size:.75rem; padding:4px; }
   .journal-page { top:13%; bottom:12%; }
   .discovery-primary { min-height:64px; }
 }
