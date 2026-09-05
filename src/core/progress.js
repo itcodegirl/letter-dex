@@ -1,3 +1,5 @@
+import { EVIDENCE_CAP, validateRecord } from './evidence.js'
+
 export const STORAGE_KEY = 'letter-dex:v1'
 export const SCHEMA_VERSION = 1
 
@@ -9,7 +11,22 @@ export function emptyProgress() {
     sessions: [],
     activeSession: { correct: 0, startedAt: new Date().toISOString() },
     settings: { mode: 'letters', letterSet: 0, wordSet: 0, letterCase: 'lower', wordLength: 'any' },
+    evidence: [],
+    evidenceSeq: 0,
+    evidenceDropped: 0,
   }
+}
+
+const evidenceNumber = id => typeof id === 'string' && /^ev:\d+$/.test(id) ? Number(id.slice(3)) : 0
+
+function normalizeEvidence(candidate) {
+  const evidence = Array.isArray(candidate.evidence)
+    ? candidate.evidence.filter(record => record && typeof record === 'object' && typeof record.itemId === 'string')
+    : []
+  const highest = evidence.reduce((max, record) => Math.max(max, evidenceNumber(record.id)), 0)
+  const seq = Number.isSafeInteger(candidate.evidenceSeq) && candidate.evidenceSeq >= highest ? candidate.evidenceSeq : highest
+  const dropped = Number.isSafeInteger(candidate.evidenceDropped) && candidate.evidenceDropped >= 0 ? candidate.evidenceDropped : 0
+  return { evidence, evidenceSeq: seq, evidenceDropped: dropped }
 }
 
 export function normalizeProgress(candidate) {
@@ -23,6 +40,7 @@ export function normalizeProgress(candidate) {
     sessions: Array.isArray(candidate.sessions) ? candidate.sessions : [],
     activeSession: { ...fallback.activeSession, ...candidate.activeSession },
     settings: { ...fallback.settings, ...candidate.settings },
+    ...normalizeEvidence(candidate),
   }
 }
 
@@ -68,6 +86,24 @@ export function recordAttempt(state, { id, kind, correct, now = new Date() }) {
     mastered: kind !== 'math-help' && (streak >= 2 || previous.mastered),
   }
   return state.items[id]
+}
+
+/**
+ * Append one finished round record (docs/learning/evidence-record-v1.md).
+ * Never touches items, sessions, rewards, or the scheduling flag.
+ */
+export function recordEvidence(state, record, now = new Date()) {
+  validateRecord(record)
+  if (!Array.isArray(state.evidence)) Object.assign(state, normalizeEvidence(state))
+  state.evidenceSeq += 1
+  const stored = { ...record, id: `ev:${state.evidenceSeq}`, observedAt: record.observedAt ?? now.toISOString() }
+  state.evidence.push(stored)
+  if (state.evidence.length > EVIDENCE_CAP) {
+    const excess = state.evidence.length - EVIDENCE_CAP
+    state.evidence.splice(0, excess)
+    state.evidenceDropped += excess
+  }
+  return stored
 }
 
 export function recordCatch(state, slug, now = new Date()) {
