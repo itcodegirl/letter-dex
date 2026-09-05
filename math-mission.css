@@ -105,6 +105,13 @@
 .math-mission.is-complete .math-mission-portrait { animation: mission-cheer 650ms ease-out 1; }
 .math-mission.is-complete .math-mission-friend .math-mission-portrait { animation-delay: 90ms; }
 .math-mission.is-complete .math-mission-tap { visibility: hidden; }
+.math-mission-portrait.mission-listening { animation: mission-listen 520ms ease-out; }
+
+@keyframes mission-listen {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  35% { transform: translateY(-8px) rotate(-5deg); }
+  70% { transform: translateY(-2px) rotate(3deg); }
+}
 
 @keyframes mission-cheer {
   0%, 100% { transform: translateY(0) rotate(0deg); }
@@ -137,6 +144,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .math-mission-portrait.mission-listening { animation: none; }
   .math-mission.is-complete .math-mission-portrait { animation: none; }
   .math-mission-pokemon:active:not(:disabled) .math-mission-portrait { transform: none; }
 }

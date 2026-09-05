@@ -3,6 +3,7 @@ import { LETTER_SETS } from '../../data/reading/letter-sets.js'
 import { chooseAdaptive, chooseDistinct } from '../core/select.js'
 import { getPokemon, preloadArtwork } from '../core/pokeapi.js'
 import { speak } from '../core/speech.js'
+import { mountPokemonPortrait } from '../ui/pokemon-portrait.js'
 
 function shuffled(items, random = Math.random) {
   return [...items].sort(() => random() - 0.5)
@@ -24,6 +25,8 @@ export class LettersMode {
     if (this.settings.letterSet === 'all') return Object.keys(ROSTER)
     return LETTER_SETS[this.settings.letterSet]?.letters ?? LETTER_SETS[0].letters
   }
+
+  destroy() { this.portrait?.destroy() }
 
   display(letter) {
     return this.settings.letterCase === 'upper' ? letter : letter.toLowerCase()
@@ -50,8 +53,11 @@ export class LettersMode {
       pokemon = result
       const image = this.elements.stage.querySelector('.encounter-pokemon')
       if (image && pokemon.artwork) {
-        image.src = pokemon.artwork
-        image.hidden = false
+        this.portrait = mountPokemonPortrait(image, pokemon, {
+          active: answered,
+          onLoad: () => { if (this.isCurrentRound()) image.hidden = false },
+          onError: () => { if (this.isCurrentRound()) image.hidden = true },
+        })
         if (answered) { image.classList.remove('is-mystery'); image.alt = `${pokemon.name} discovered` }
       }
     }).catch(() => {})
@@ -68,7 +74,6 @@ export class LettersMode {
           <span>Listen</span>
         </button>
       </div>`
-    this.elements.stage.querySelector('img').onerror = event => { event.target.hidden = true }
 
     const clash = { C: 'K', K: 'C' }[answer.letter]
     const distractors = chooseDistinct(
@@ -97,6 +102,7 @@ export class LettersMode {
           const name = pokemon?.name
           const image = this.elements.stage.querySelector('.encounter-pokemon')
           image.classList.remove('is-mystery')
+          this.portrait?.setActive(true)
           image.alt = name ? `${name} discovered` : 'Discovery artwork'
           this.elements.stage.classList.add('discovered')
           this.elements.prompt.textContent = name ? `You found ${name}!` : 'You raised a stone!'

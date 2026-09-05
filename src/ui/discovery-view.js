@@ -1,6 +1,7 @@
 import { getPokemon, preloadArtwork } from '../core/pokeapi.js'
 import { speak } from '../core/speech.js'
 import { followFootprint, openDiscoveryJournal } from '../core/discoveries.js'
+import { mountPokemonPortrait } from './pokemon-portrait.js'
 
 const icon = name => `<span class="material-symbols-rounded" aria-hidden="true">${name}</span>`
 
@@ -9,9 +10,10 @@ export class DiscoveryView {
     Object.assign(this, { root, save, camp, next, buddy, destination })
     this.version = 0
   }
-  cancel() { this.version++; this.root.replaceChildren() }
+  cancel() { this.version++; this.portrait?.destroy(); this.root.replaceChildren() }
 
   show(entry, { replay = false } = {}) {
+    this.portrait?.destroy()
     const version = ++this.version
     const current = () => version === this.version
     const step = replay ? 'journal' : entry.step
@@ -59,11 +61,13 @@ export class DiscoveryView {
         if (!current()) return
         pokemonName = pokemon.name
         name.textContent = pokemon.name
-        portrait.onload = () => { if (current()) { portrait.hidden = false; status.textContent = ''; loading = false } }
-        portrait.onerror = () => { if (current()) { portrait.hidden = true; loading = false; status.textContent = 'Your friend is saved. The picture is taking a little longer.'; retry.hidden = false } }
         portrait.alt = pokemon.name
         if (!pokemon.artwork) throw new Error('No artwork')
-        portrait.src = pokemon.artwork
+        this.portrait?.destroy()
+        this.portrait = mountPokemonPortrait(portrait, pokemon, {
+          onLoad: () => { if (current()) { portrait.hidden = false; status.textContent = ''; loading = false } },
+          onError: () => { if (current()) { portrait.hidden = true; loading = false; status.textContent = 'Your friend is saved. The picture is taking a little longer.'; retry.hidden = false } },
+        })
       } catch {
         if (!current()) return
         loading = false; status.textContent = 'Your friend is saved. You can keep going or try the picture again.'; retry.hidden = false

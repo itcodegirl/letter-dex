@@ -4,6 +4,7 @@ import { cumulativeWords } from '../../data/reading/word-sets.js'
 import { chooseAdaptive } from '../core/select.js'
 import { getPokemon } from '../core/pokeapi.js'
 import { speak, speakWord } from '../core/speech.js'
+import { mountPokemonPortrait } from '../ui/pokemon-portrait.js'
 
 function shuffled(items) {
   return [...items].sort(() => Math.random() - 0.5)
@@ -33,6 +34,8 @@ export class WordsMode {
         return { id: `word:${word}`, word, graphemes, display: word }
       })
   }
+
+  destroy() { this.portrait?.destroy() }
 
   distractors(answer, allItems) {
     return allItems
@@ -110,8 +113,13 @@ export class WordsMode {
           try {
             const pokemon = await getPokemon(slug)
             if (!this.isCurrentRound()) return
-            this.elements.stage.innerHTML = `<img class="encounter-pokemon" src="${pokemon.artwork}" alt="${pokemon.name} caught">`
-            this.elements.stage.querySelector('img').onerror = () => { if (this.isCurrentRound()) this.elements.stage.textContent = 'Caught!' }
+            const image = document.createElement('img')
+            image.className = 'encounter-pokemon'
+            image.alt = `${pokemon.name} caught`
+            this.elements.stage.replaceChildren(image)
+            this.portrait = mountPokemonPortrait(image, pokemon, {
+              onError: () => { if (this.isCurrentRound()) this.elements.stage.textContent = 'Caught!' },
+            })
           } catch {
             if (!this.isCurrentRound()) return
             this.elements.stage.textContent = 'Caught!'

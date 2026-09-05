@@ -20,6 +20,18 @@ are merged; verify their combined behavior. All further merges remain Jenna's.
 
 ## Living Trail implementation slice (selected 5 Sep 2026)
 
+### Animated Pokémon (selected 5 Sep 2026)
+
+Jenna requested animated Pokémon in the existing game. Companions, math crew,
+earned encounters, journal friends, and visible collection cards use animated
+sprites returned by PokéAPI. Official artwork remains the still-image fallback.
+Reduced-motion preferences, background tabs, and offscreen portraits use still
+artwork; missing animation never prevents a question or a reward. Hidden sound
+answers stay hidden and still until earned. No curriculum or progression changes.
+
+This presentation change builds on the longer-mission runtime in PR #18 and is
+verified together with the additional sets in PR #16 before local handoff.
+
 ### Longer math missions and challenge sets (selected 5 Sep 2026)
 
 After the laptop pilot found instant answers, easy repetition, and too little

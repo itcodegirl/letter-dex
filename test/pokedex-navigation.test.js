@@ -8,7 +8,7 @@ test('a late Pokédex request cannot replace a newer view after navigation', asy
   let resolveRequest
   const request = new Promise(resolve => { resolveRequest = resolve })
   t.mock.method(globalThis, 'fetch', () => request)
-  const root = { innerHTML: '' }
+  const root = { innerHTML: '', querySelectorAll: () => [] }
   let current = true
   const render = renderPokedex(root, { abra: { slug: 'abra', count: 1 } }, () => current)
   assert.match(root.innerHTML, /Opening/)
@@ -25,7 +25,7 @@ test('the active Pokédex still displays its fetched collection', async t => {
   t.mock.method(globalThis, 'fetch', async () => ({
     ok: true, json: async () => ({ name: 'abra', sprites: { front_default: 'abra.png' } }),
   }))
-  const root = { innerHTML: '' }
+  const root = { innerHTML: '', querySelectorAll: () => [] }
   await renderPokedex(root, { abra: { slug: 'abra', count: 2 } })
   assert.match(root.innerHTML, /abra.png/)
   assert.match(root.innerHTML, /Caught 2×/)
