@@ -20,14 +20,36 @@ was Totodile. These are adult pilot observations, not a completed learning test.
   Displayed names, PokéAPI slugs, sound anchors, and curriculum data are unchanged.
   The spelling hint's actual sound still needs adult audition on each device.
 
-This is a narrow correction to existing speech. It does not add recorded audio,
-new learning content, or worlds. AR/PW and the broader expansion gate stay frozen.
+The adult subsequently confirmed that M and S were spoken as repeated letter
+names ("em, em, em" and "s, s, s"). This is a confirmed sound-clue defect, not
+a request to switch to letter-name instruction.
+
+M and S now use locally bundled phoneme clips in Listen, feedback, and segmented
+words. Clips and narration play in order, preserving sound before name. New
+speech or navigation cancels both; late callbacks cannot resume an old clue.
+A failed clip shows an audio access message rather than falling back to the
+known incorrect repeated letters. Parent settings offers separate sound previews.
+Sources, adaptations, and CC BY-SA 3.0 credits are in
+`assets/audio/sounds/ATTRIBUTION.md`. The adult confirmed both isolated clips
+produce the intended hum/hiss without repeated letter names: "yes i do".
+
+Correct-answer transitions also wait for speech to finish after the existing
+minimum reveal delay, with a 15-second fallback for missing audio-end events.
+This prevents the slower pace from cutting off feedback; navigation still wins.
+
+This is a narrow correction to reported speech defects. It does not add new
+learning content or worlds, or approve the broader recorded-voice phase. AR/PW
+and the expansion gate stay frozen. Other phonemes still rely on browser speech
+and have not been validated by this correction.
 
 ## Verification
 
-- All 27 tests pass, including delayed/unavailable voice fallback, voice and pace
+- All 33 tests pass, including delayed/unavailable voice fallback, voice and pace
   backup round-trip, cancellation before replacement speech, gentle defaults,
-  segmented-word order, and the Totodile speech substitution.
+  segmented-word order, and the Totodile speech substitution. Phoneme tests cover
+  clip-before-name sequencing, cancel/late-callback handling, failure without
+  incorrect synthesized fallback, and mixed clip/speech word segments. Timing
+  tests cover slow and quick speech, missing end events, and leaving the round.
 - Separate browser origin: selected Microsoft Zira and Slower, refreshed, and
   confirmed both selections persisted. The browser exposed David, Mark, and Zira.
 - Inspected actual laptop UI and keyboard focus. Voice and pace selects plus the
@@ -37,9 +59,7 @@ new learning content, or worlds. AR/PW and the broader expansion gate stay froze
 
 Adult retest requested: refresh, choose Zira with Gentle or Slower, press Try
 voice, and report clarity, comfort, and Totodile pronunciation. Result pending.
-The adult subsequently reported "The voice keep say 'MMM' for M." Clarification
-is pending: a continuous /m/ is intended in Sound adventure, while repeated
-letter names would be a synthesis defect. Do not replace a sound clue with the
-letter name or alter the authoritative roster without resolving the observation.
+Adult retest of Try m sound and Try s sound: passed on the laptop. Full in-quest
+sound feedback and other phonemes still need listening checks.
 Physical Android audition and child comprehension remain pending. The laptop
 pilot remains open; successful unit tests do not close those checks.

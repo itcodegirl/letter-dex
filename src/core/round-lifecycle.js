@@ -21,4 +21,15 @@ export class RoundLifecycle {
     }, delay)
     this.timers.add(timer)
   }
+  afterFeedback(id, minimumDelay, feedback, callback) {
+    let advanced = false
+    const advance = () => {
+      if (advanced || !this.isCurrent(id)) return
+      advanced = true
+      callback()
+    }
+    this.after(id, minimumDelay, () => { feedback.then(advance) })
+    // Missing browser audio-end events must not strand a quest.
+    this.after(id, 15000, advance)
+  }
 }

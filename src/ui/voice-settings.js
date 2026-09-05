@@ -1,4 +1,4 @@
-import { availableVoices, speak } from '../core/speech.js'
+import { availableVoices, speak, cancelSpeech } from '../core/speech.js'
 
 export function createVoiceSettings({ select, pace, preview, status, getVoiceURI, getRate, onChange, onRateChange }) {
   function refresh() {
@@ -23,12 +23,12 @@ export function createVoiceSettings({ select, pace, preview, status, getVoiceURI
       : 'Voice choices are loading. You can still try the browser default.'
   }
   select.addEventListener('change', () => {
-    globalThis.speechSynthesis?.cancel()
+    cancelSpeech()
     onChange(select.value)
     refresh()
   })
   pace.addEventListener('change', () => {
-    globalThis.speechSynthesis?.cancel()
+    cancelSpeech()
     onRateChange(Number(pace.value))
     refresh()
   })
