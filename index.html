@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#c2352b">
+    <meta name="description" content="Letter Dex, a private reading game prototype.">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <title>Letter Dex</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="dex">
+      <header class="lid">
+        <div class="lens" aria-hidden="true"></div>
+        <div class="lamps" aria-hidden="true"><i class="lamp r"></i><i class="lamp y"></i><i class="lamp g"></i></div>
+        <div class="badges" id="badges" aria-label="Badges earned"></div>
+      </header>
+
+      <nav class="modes" aria-label="Choose a mode">
+        <button data-mode="letters" class="on" aria-pressed="true">Letters</button>
+        <button data-mode="words" aria-pressed="false">Words</button>
+        <button data-mode="pokedex" aria-pressed="false">Pokédex</button>
+      </nav>
+
+      <section id="playView">
+        <div class="screen">
+          <p class="prompt" id="prompt">Loading…</p>
+          <div class="stage thinking" id="stage">●&nbsp;●&nbsp;●</div>
+          <div class="reveal" id="reveal" aria-live="polite"></div>
+        </div>
+        <div class="keys" id="keys"></div>
+      </section>
+
+      <section id="pokedexView" class="collection-screen" aria-label="Caught Pokémon" hidden></section>
+
+      <div class="foot" id="sessionProgress">
+        <div class="meter" aria-hidden="true"><span id="meter"></span></div>
+        <div class="count" id="count">0 of 8</div>
+      </div>
+
+      <details class="grown" id="grownSettings">
+        <summary>Grown-up settings &amp; progress</summary>
+        <div class="grown-body">
+          <section id="lettersSettings">
+            <h2>Letter set</h2>
+            <div class="presets" id="letterPresets"></div>
+            <h2>Show letters as</h2>
+            <div class="presets" id="caseToggle">
+              <button data-case="lower">a b c</button>
+              <button data-case="upper">A B C</button>
+            </div>
+          </section>
+
+          <section id="wordsSettings" hidden>
+            <h2>Word set</h2>
+            <p class="setting-help">Each set includes all earlier sets.</p>
+            <div class="presets" id="wordPresets"></div>
+            <h2>Word length</h2>
+            <div class="presets" id="lengthToggle">
+              <button data-length="2">2 sounds</button>
+              <button data-length="3">3 sounds</button>
+              <button data-length="any">Mixed</button>
+            </div>
+          </section>
+
+          <p class="note">
+            Sets follow the curriculum order. The recommendation unlocks at 80% item mastery,
+            but every set remains available as a grown-up override. X is reserved for an ending-sound round.
+          </p>
+
+          <section class="parent-section" aria-labelledby="parentHeading">
+            <div class="section-heading">
+              <h2 id="parentHeading">Progress</h2>
+              <span>Stored only on this device</span>
+            </div>
+            <div id="parentView"></div>
+            <div class="backup-actions">
+              <button id="exportButton" type="button">Export progress</button>
+              <label class="import-label">Import progress<input id="importInput" type="file" accept="application/json,.json"></label>
+            </div>
+            <p id="backupStatus" class="backup-status" aria-live="polite"></p>
+          </section>
+        </div>
+      </details>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
