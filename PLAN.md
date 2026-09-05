@@ -3,6 +3,15 @@
 Status: **Phase 0 approved by Jenna on 2 Sep 2026. Later phases remain plan-only until approved.**
 Last updated: 4 Sep 2026.
 
+## Living Trail implementation slice (selected 5 Sep 2026)
+
+Jenna selected Living Trail with a Pokémon companion and asked to apply it directly to the game.
+The slice layers a Three.js 0.180.0 renderer over the current Sounds and Words activities,
+preserves curriculum data and mastery rules, and adds optional continuation after eight answers.
+Companion artwork comes from PokéAPI at runtime and is independent of the answer.
+Static-server delivery replaces the inconsistent file-protocol requirement for this slice.
+This does not approve or implement later math, tracing, or curriculum phases.
+
 ## Open questions (answer before phase 0 ships)
 
 1. **Device.** Decided 4 Sep 2026: Android tablet (primary), laptop (secondary). Design for

@@ -3,7 +3,7 @@ const resourceCache = new Map()
 
 export async function getPokemon(slug, fetcher = globalThis.fetch) {
   if (resourceCache.has(slug)) return resourceCache.get(slug)
-  const request = fetcher(`${API_ROOT}/pokemon/${slug}`).then(async (response) => {
+  const request = fetcher(`${API_ROOT}/pokemon/${slug}`, { signal: AbortSignal.timeout(8000) }).then(async (response) => {
     if (!response.ok) throw new Error(`PokéAPI returned ${response.status} for ${slug}`)
     const data = await response.json()
     return {

@@ -16,6 +16,9 @@ import { LettersMode } from './modes/letters.js'
 import { WordsMode } from './modes/words.js'
 import { renderParentView } from './ui/parent-view.js'
 import { renderPokedex } from './ui/pokedex-view.js'
+import { RoundLifecycle } from './core/round-lifecycle.js'
+import { getPokemon } from './core/pokeapi.js'
+import { speak } from './core/speech.js'
 
 const SESSION_CAP = 8
 
@@ -52,12 +55,29 @@ const elements = {
 let state = loadProgress()
 let mode = state.settings.mode === 'pokedex' ? 'letters' : state.settings.mode
 let sessionEnded = false
-let nextRoundTimer = null
-let roundSequence = 0
+let atCamp = true
+let trail = null
+const lifecycle = new RoundLifecycle()
 const engine = new ChooseEngine(elements.keys)
 
+function sceneStatus(unavailable) {
+  byId('sceneStatus').textContent = unavailable ? 'Simple scenery active. Your adventure still works.' : ''
+}
+import('./render/trail.js').then(({ createTrail }) => {
+  trail = createTrail(byId('world'), sceneStatus)
+  trail.setProgress(state.activeSession.correct)
+}).catch(() => sceneStatus(true))
+window.addEventListener('pagehide', () => { trail?.dispose(); lifecycle.cancel() })
+getPokemon('pikachu').then(pokemon => {
+  const image = byId('buddyImage')
+  image.alt = `${pokemon.name}, your companion`
+  image.onload = () => { image.hidden = false }
+  image.onerror = () => { image.hidden = true }
+  image.src = pokemon.artwork
+}).catch(() => {})
+
 function persist() {
-  saveProgress(state)
+  byId('saveStatus').textContent = saveProgress(state) ? '' : 'Progress could not be saved. Ask a grown-up to export it.'
   renderParentView(elements.parentView, state)
 }
 
@@ -72,11 +92,13 @@ function getProgress(id) {
 
 function handleAttempt(attempt) {
   recordAttempt(state, attempt)
+  if (!attempt.correct) byId('buddyLine').textContent = 'Listen again. We can try another stone.'
   persist()
 }
 
 function paintProgress(displayCount = state.activeSession.correct) {
   const bounded = Math.min(displayCount, SESSION_CAP)
+  trail?.setProgress(bounded)
   elements.count.textContent = `${bounded} of ${SESSION_CAP}`
   elements.meter.replaceChildren()
   for (let index = 0; index < SESSION_CAP; index += 1) {
@@ -93,38 +115,45 @@ function paintProgress(displayCount = state.activeSession.correct) {
 }
 
 function showSessionEnd() {
+  lifecycle.cancel()
   sessionEnded = true
   engine.clear()
-  elements.prompt.textContent = 'Badge earned!'
+  elements.prompt.textContent = 'Quest complete!'
   elements.stage.className = 'stage finish'
   elements.stage.innerHTML = '<div class="earned-badge" aria-hidden="true">★</div>'
-  elements.reveal.innerHTML = '<div class="all-done">All done for now.</div><p>You caught, read, and listened eight times.</p>'
+  elements.reveal.innerHTML = '<div class="all-done">Where to next?</div>'
+  byId('questActions').hidden = false
+  byId('nextAdventure').focus()
+  byId('buddyLine').textContent = 'We found the way!'
   paintProgress(SESSION_CAP)
 }
 
 function startNewSession() {
   sessionEnded = false
+  byId('questActions').hidden = true
   if (state.activeSession.correct >= SESSION_CAP) completeSession(state)
   persist()
   paintProgress()
 }
 
-function handleCorrect({ caughtSlug } = {}) {
+function handleCorrect(roundId, { caughtSlug } = {}) {
+  if (!lifecycle.accept(roundId)) return
   if (caughtSlug) recordCatch(state, caughtSlug)
   state.activeSession.correct += 1
   const completed = state.activeSession.correct >= SESSION_CAP
   paintProgress()
 
   if (completed) {
+    sessionEnded = true
     completeSession(state)
     persist()
-    window.setTimeout(showSessionEnd, 1900)
+    lifecycle.after(roundId, 1900, showSessionEnd)
     return
   }
 
   persist()
-  window.clearTimeout(nextRoundTimer)
-  nextRoundTimer = window.setTimeout(() => playRound('completed answer'), 2300)
+  byId('buddyLine').textContent = state.activeSession.correct === 3 ? 'Look! The first beacon is glowing.' : state.activeSession.correct === 6 ? 'The clearing is just ahead!' : 'Another stone! Let’s explore.'
+  lifecycle.after(roundId, 2600, () => playRound())
 }
 
 function createController(roundId) {
@@ -133,10 +162,10 @@ function createController(roundId) {
     elements,
     engine,
     getProgress,
-    onAttempt: handleAttempt,
-    onCorrect: handleCorrect,
-    settings: state.settings,
-    isCurrentRound: () => roundId === roundSequence,
+    onAttempt: attempt => { if (lifecycle.isCurrent(roundId)) handleAttempt(attempt) },
+    onCorrect: result => handleCorrect(roundId, result),
+    settings: { ...state.settings },
+    isCurrentRound: () => lifecycle.isCurrent(roundId),
   }
   return mode === 'words'
     ? new WordsMode({ ...shared, activeLetters })
@@ -144,14 +173,22 @@ function createController(roundId) {
 }
 
 function playRound() {
-  if (sessionEnded || mode === 'pokedex') return
-  roundSequence += 1
-  createController(roundSequence).play()
+  if (sessionEnded || mode === 'pokedex' || atCamp) return
+  const roundId = lifecycle.begin()
+  globalThis.speechSynthesis?.cancel()
+  byId('buddyLine').textContent = 'Listen to the clue. Find the next stone.'
+  createController(roundId).play()
 }
 
 async function selectMode(nextMode) {
-  window.clearTimeout(nextRoundTimer)
-  roundSequence += 1
+  lifecycle.cancel()
+  globalThis.speechSynthesis?.cancel()
+  atCamp = false
+  byId('campView').hidden = true
+  byId('grownSettings').hidden = true
+  byId('questActions').hidden = true
+  byId('buddy').hidden = nextMode === 'pokedex'
+  byId('grownSettings').open = false
   mode = nextMode
   elements.appShell.dataset.activeMode = nextMode
   state.settings.mode = nextMode
@@ -175,9 +212,33 @@ async function selectMode(nextMode) {
     await renderPokedex(elements.pokedexView, state.collection)
   } else {
     if (sessionEnded) startNewSession()
+    paintProgress()
     playRound('mode selected')
   }
+  trail?.setActive(!collectionMode)
 }
+
+function showCamp() {
+  lifecycle.cancel()
+  globalThis.speechSynthesis?.cancel()
+  atCamp = true
+  engine.clear()
+  elements.playView.hidden = true
+  elements.pokedexView.hidden = true
+  elements.sessionProgress.hidden = true
+  byId('questActions').hidden = true
+  byId('buddy').hidden = true
+  byId('campView').hidden = false
+  byId('grownSettings').hidden = false
+  trail?.setActive(true)
+  byId('startTrail').focus()
+}
+byId('homeButton').addEventListener('click', showCamp)
+byId('backToCamp').addEventListener('click', showCamp)
+byId('nextAdventure').addEventListener('click', () => { startNewSession(); selectMode(mode === 'pokedex' ? 'letters' : mode) })
+byId('startTrail').addEventListener('click', () => selectMode('letters'))
+byId('startWords').addEventListener('click', () => selectMode('words'))
+byId('campListen').addEventListener('click', () => speak('Brody, a mystery is waiting across the stream. Choose a sound adventure or a word adventure.'))
 
 function activateButtonGroup(root, attribute, value) {
   root.querySelectorAll('button').forEach((button) => {
@@ -286,4 +347,4 @@ elements.importInput.addEventListener('change', async () => {
 buildSettings()
 renderParentView(elements.parentView, state)
 paintProgress()
-selectMode(mode)
+showCamp()
