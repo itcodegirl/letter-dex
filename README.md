@@ -68,6 +68,15 @@ performance on the actual tablet before relying on it for independent play.
 
 The selected Math Adventure extension is described above; later curriculum phases remain planned.
 
+## Adult-led pilot
+
+Follow the [counting pilot guide](docs/qa/counting-pilot-guide.md) and
+[learning/evidence contract](docs/learning/counting-evidence-contract-v1.md).
+Record first answers, support, and retries separately. Quest rewards and the
+existing adaptive mastery flag do not establish durable learning. Physical
+Android validation remains required; the local Run address above works only
+on the laptop running the server. See the [current results](docs/qa/counting-pilot-2026-09-05.md).
+
 ## Test
 
 ```powershell

@@ -3,6 +3,21 @@
 Status: **Phase 0 approved by Jenna on 2 Sep 2026. Later phases remain plan-only until approved.**
 Last updated: 5 Sep 2026.
 
+## Current validation gate (selected 5 Sep 2026)
+
+The [counting learning/evidence contract v1](docs/learning/counting-evidence-contract-v1.md)
+is approved for a narrow adult-led pilot under Jenna's next-three-actions request.
+Use the [pilot guide](docs/qa/counting-pilot-guide.md) and
+[dated results](docs/qa/counting-pilot-2026-09-05.md) to distinguish independent
+first responses, supported practice, retries, and access problems. Existing
+runtime mastery and reward rules remain unchanged; pilot validation is pending.
+
+Complete physical Android observations and retest blocking corrections before
+Jenna reopens new curriculum or world expansion. Laptop testing is supplemental.
+Preserve the selected slices below. AR/PW remains frozen under D-008 unless a
+specific blocking dependency is separately identified and scoped. PRs #12/#13
+are merged; verify their combined behavior. All further merges remain Jenna's.
+
 ## Living Trail implementation slice (selected 5 Sep 2026)
 
 ### Destination celebration (selected 5 Sep 2026)
